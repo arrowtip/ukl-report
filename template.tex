@@ -7,7 +7,7 @@
 \documentclass[10pt,twocolumn,a4paper]{article}
 \usepackage{styles/usenix-style}
 
-\author{Put your name here}
+\author{Jakob Schmid}
 
 %%%%%%%%%%%%%%%%%% Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TODO: Change draft to final before submitting final version.
@@ -23,7 +23,7 @@
 
 \begin{document}
 
-\title{ Put the title of your seminar report here }
+\title{Unikernel Linux (UKL)}
 
 \newcommand{\todo}[1]{{\texttt{[#1]}}}
 \newcommand{\code}[1]{{\tt \small{#1}}}
@@ -32,10 +32,17 @@
 %\draftfooter
 
 \begin{abstract}
-Bla.
+  This report discusses Unikernel Linux (UKL), an approach to introduce a
+  unikernel target into the Linux kernel.
+  The specialized demand of cloud services has recently given rise
+  to a resurgence of library operating systems in the form of unikernels.
+  The authors of the UKL paper want to show that the Linux kernel can be
+  modified to include the benefits of unikernels, while maintaining the
+  ecosystem of applications and maintainers of Linux.
 \end{abstract}
 
 \section{Introduction}\label{sec:introduction}
+  
 \section{Background}\label{sec:background}
 
 \begin{figure}[htbp]
