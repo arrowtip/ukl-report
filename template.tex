@@ -42,7 +42,23 @@
 \end{abstract}
 
 \section{Introduction}\label{sec:introduction}
+  Modern cloud services are often highly specialised, to point of a microservice, 
+  where an applications is split up into a collection of loosely coupled services,
+  that communicate through lightweight protocols and each only fullfill a single purpose.
+  These services share a few key demands. They need to be able to communicate 
+  efficiently with each other. Since they need to communicate with other services,
+  they are exposed to the internet to some degree and thus should be as secure as possible.
+  Due to the single purpose nature of the microservices they often execute as a single process.
+  Lastly the image the service is executed with and the memory usage should be as small as possible.
+  The services are often executed in a virtual machine on rented hardware, so lower requirements
+  in memory and storage can improve the profitability of a service.
+
+  These demands have caused a resurgence of research exploring the concept of a library OS and the
+  emergence of unikernels. In a library OS a target application is linked with a set of
+  libraries that provide all the services a regular OS would usually provide.
+  The resulting executable can then be deployed directly to hardware.
   
+
 \section{Background}\label{sec:background}
 
 \begin{figure}[htbp]
