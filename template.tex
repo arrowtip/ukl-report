@@ -42,7 +42,7 @@
 \end{abstract}
 
 \section{Introduction}\label{sec:introduction}
-  Modern cloud services are often highly specialised, to point of a microservice, 
+  Modern cloud services are often highly specialised, to the point of a microservice, 
   where an applications is split up into a collection of loosely coupled services,
   that communicate through lightweight protocols and each only fullfill a single purpose.
   These services share a few key demands. They need to be able to communicate 
@@ -52,11 +52,22 @@
   Lastly the image the service is executed with and the memory usage should be as small as possible.
   The services are often executed in a virtual machine on rented hardware, so lower requirements
   in memory and storage can improve the profitability of a service.
-
   These demands have caused a resurgence of research exploring the concept of a library OS and the
-  emergence of unikernels. In a library OS a target application is linked with a set of
+  emergence of unikernels. 
+
+  In a library OS a target application is linked with a set of
   libraries that provide all the services a regular OS would usually provide.
   The resulting executable can then be deployed directly to hardware.
+  In 2013 the term \textit{unikernel} was first introduced for library OSs
+  for cloud services and deployment to virtual hardware \cite{madhavapeddy13}.
+
+  Since then multiple unikernels have been created. Some are written from scratch like
+  ClickOS \cite{martins2014} and Unikraft \cite{kuenzer21}.
+  Others borrow code from an existing OS like Drawbridge \cite{porter11} 
+  that uses code from Windows.
+
+  UKL uses the Linux kernel as a base but tries to keep the changes minimal
+  so that UKL can be maintained with the (general purpose) Linux kernel.
   
 
 \section{Background}\label{sec:background}
