@@ -90,7 +90,21 @@
     This protection requires that applications must not be able
     to modify or replace the implementation of the abstractions supplied by the OS.
 
+  \subsection{Library operating systems}
+    One of the problems of the fixed abstractions for system resources in general-purpose OSs
+    is that it denies applications the advantage of domain-specific optimizations.
+    For example in 1994 Cao et al. \cite{cao94} showed that application-controlled file caching
+    can reduce application running time by 45\%.
 
+    In the mid 1990s the libOS was proposed as a different OS architecture
+    where the application can control the hardware abstractions, instead of the OS \cite{engler95}.
+    In a libOS the hardware resources are not controlled and protected by a kernel.
+    Instead a set of application-level libraries implement the mechanisms to drive hardware,
+    communicate over the network and all other functionality a general-purpose 
+    operating system would provide for an application.
+    Further a set of policies are used to enforce access control and isolation in the
+    application layer \cite{madhavapeddy13-2}.
+    
 
 
 \begin{figure}[htbp]
