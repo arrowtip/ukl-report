@@ -52,13 +52,13 @@
   Lastly the image the service is executed with and the memory usage should be as small as possible.
   The services are often executed in a virtual machine on rented hardware, so lower requirements
   in memory and storage can improve the profitability of a service.
-  These demands have caused a resurgence of research exploring the concept of a library OS and the
-  emergence of unikernels. 
+  These demands have caused a resurgence of research exploring the concept of 
+  a library operating system (libOS) and the emergence of unikernels. 
 
-  In a library OS a target application is linked with a set of
+  In a libOS a target application is linked with a set of
   libraries that provide all the services a regular OS would usually provide.
   The resulting executable can then be deployed directly to hardware.
-  In 2013 the term \textit{unikernel} was first introduced for library OSs
+  In 2013 the term \textit{unikernel} was first introduced for libOSs
   for cloud services and deployment to virtual hardware \cite{madhavapeddy13}.
 
   Since then multiple unikernels have been created. Some are written from scratch like
@@ -71,6 +71,27 @@
   
 
 \section{Background}\label{sec:background}
+  \subsection{General-purpose monolithic operating systems}
+    In a general-purpose monolithic operating system, such as Linux and Windows,
+    the operating system (OS) defines an interface to use the physical resources
+    of the system. 
+    This interface hides details about the physical resources behind
+    high-level abstractions like processes, files, addresss spaces 
+    and interprocess communication.
+    Applications running on the system use this interface and its abstractions
+    to utilize the physical resources of the system.
+    The implementation of the abstractions must be general to allow the execution 
+    of very different applications.
+    The OS also ensures that different applications can execute concurrently, 
+    without interfering with each other. 
+    Virtual address spaces are used to allow for simultanious usage of physical memory.
+    Access to other resources, such as files and network communication, is controlled
+    by the OS.
+    This protection requires that applications must not be able
+    to modify or replace the implementation of the abstractions supplied by the OS.
+
+
+
 
 \begin{figure}[htbp]
   \centering
