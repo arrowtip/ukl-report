@@ -105,6 +105,30 @@
     Further a set of policies are used to enforce access control and isolation in the
     application layer \cite{madhavapeddy13-2}.
     
+    The libOS architecture allows applications to access hardware resources directly
+    thus eliminating the need for repeated privilege transitions to move data
+    between kernel and user space.
+    In addition applications can now choose a library to drive the hardware that is
+    taylored to the needs of that specific application, thus improving performance.
+    This architecture also makes the performance more predictable.
+    In a monolithic OS the kernel might schedule a different process after a
+    context switch or do signal handling before handing control back to the application.
+
+    Compiling an application with only the libraries the application requires
+    can significantly reduce the amount of code involved.
+    This reduction in code can not only lead to a reduction in image size, 
+    but can also decrease the chance of the code containing a 
+    security vulnerability \cite{madhavapeddy13}.
+
+    The libOS architecture has two major disadvantages:   
+    One, it is hard to achieve strong resource isolation because not all
+    usage of hardware resources has to go through one abstraction supplied by
+    a kernel like in a monolithic OS.
+    Two, device drivers have to be rewritten to work as a library rather than
+    for example a kernel module.
+    This implementation effort has caused problems with hardware compatability
+    for libOS projects and thus mostly limited their relevance to the
+    research domain \cite{madhavapeddy13}.
 
 
 \begin{figure}[htbp]
