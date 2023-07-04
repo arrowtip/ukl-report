@@ -22,6 +22,9 @@
 @string{sosp19 = "Proceedings of the 19th Symposium on Operating System
                  Principles"}
 
+@string{sosp26 = "Proceedings of the 26th Symposium on Operating System
+                 Principles"}
+
 @string{osdi1 = "Proceedings of the 1st Symposium on Operating Systems
                   Design and Implementation"}
 
@@ -80,6 +83,9 @@
                   Design and Implementation"}
 
 @string{usenix11 = "Proceedings of the 11th USENIX Conference on Networked Systems 
+                  Design and Implementation"}
+
+@string{usenix12 = "Proceedings of the 12th USENIX Conference on Operating Systems
                   Design and Implementation"}
 
 @string{wiess1 = "Proceedings of the 1st Workshop on Industrial
@@ -208,6 +214,14 @@
   url =  	 {http://portal.acm.org/citation.cfm?id=268998.266660}
 }
 
+@inproceedings{hunt07,
+  author = {Hunt, Galen and Aiken, Mark and F\"{a}hndrich, Manuel and Hawblitzel, Chris and Hodson, Orion and Larus, James and Levi, Steven and Steensgaard, Bjarne and Tarditi, David and Wobber, Ted},
+  title = {Sealing OS Processes to Improve Dependability and Safety},
+  booktitle = {Proceedings of the 2nd ACM SIGOPS/EuroSys European Conference on Computer Systems 2007},
+  year = {2007},
+  month = mar,
+}
+
 @InProceedings{jaeger97,
   author = 	 {Trent Jaeger and Frederique Giraud and Nayeem Islam
                   and Jochen Liedtke},
@@ -259,6 +273,14 @@
   month =	 sep # "17--20"
 }
 
+@inproceedings{koller17,
+  author = {Ricardo Koller and Dan Williams},
+  title = {Will Serverless End the Dominance of Linux in the Cloud?},
+  booktitle = {Proceedings of the 16th Workshop on Hot Topics in Operating Systems},
+  year = 2017,
+  month = may
+}
+
 @inproceedings{kuenzer21,
   author = {Simon Kuenzer and Vlad-Andrei Badoiu and Hugo Lefeuvre},
   title = {Unikraft: fast, specialized unikernels the easy way},
@@ -273,6 +295,15 @@
   organization = {Universit\"at Karlsruhe},
   year =	 2004,
   note =	 {Available from http://l4ka.org/}
+}
+
+@inproceedings{lankes19,
+  author = {Stefan Lankes and Jens Breitbart and Simon Pickartz},
+  title = {Exploring Rust for Unikernel Developement},
+  booktitle = {Proceedings of the 10th Workshop on Programming Languages 
+    and Operating Systems},
+  year = 2019,
+  month = oct
 }
 
 @InProceedings{levasseur04sledgehammer,
@@ -490,10 +521,19 @@
   title = {Unikernels: Rise of the Virtual Library Operating System: 
     What if all the software layers in a virtual appliance were 
     compiled within the same safe, high-level language framework?},
+  booktitle = {Queue, Volume 11, Issue 11},
   year = 2013,
   month = dec
 }
 
+@inproceedings{manco17,
+  author = {Filipe Manco and Costin Lupu and Florian Schmidt and Jose Mendes
+    and Simon Kuenzer and Sumit Sati and Kenichi Yasukata and Costin Raiciu and Felipe Huici},
+  title = {My VM is Lighter (and Safer) than your Container},
+  booktitle = sosp26,
+  year = 2017,
+  month = oct
+}
 
 @inproceedings{martins2014,
   author = {Joao Martins and Mohamed Ahmed and Costin Raiciu},
@@ -503,12 +543,30 @@
   month = apr
 }
 
+@Misc{msrc-19-07,
+  author = {{MSRC Team}},
+  title = {We need a safer systems programming language},
+  year = 2019,
+  month = jul,
+  note =  {Accessed 2023-07-04},
+  howpublished = {\url{https://msrc.microsoft.com/blog/2019/07/we-need-a-safer-systems-programming-language/}}
+}
+
 @inproceedings{porter11,
   author = {Donald E. Porter and Silas Boyd-Wickizer and Jon Howell},
   title = {Rethinking the library OS from the top down},
   booktitle = asplos16,
   year = 2011,
   month = mar
+}
+
+@inproceedings{schatzberg16,
+  author = {Dan Schatzberg and James Cadden and Han Dong and 
+    Orran Krieger and Jonathan Appavoo},
+  title = {EbbRT: a framework for building per-application library operating systems},
+  booktitle = usenix12,
+  year = 2016,
+  month = nov
 }
 
 @InProceedings{skoglund00,
