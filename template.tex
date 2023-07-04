@@ -27,6 +27,7 @@
 
 \newcommand{\todo}[1]{{\texttt{[#1]}}}
 \newcommand{\code}[1]{{\tt \small{#1}}}
+\newcommand{\refsec}[1]{{§ \ref{#1}}}
 
 \maketitle
 %\draftfooter
@@ -90,7 +91,7 @@
     This protection requires that applications must not be able
     to modify or replace the implementation of the abstractions supplied by the OS.
 
-  \subsection{Library operating systems}
+  \subsection{Library operating systems}\label{sec:libOS}
     One of the problems of the fixed abstractions for system resources in general-purpose OSs
     is that it denies applications the advantage of domain-specific optimizations.
     For example in 1994 Cao et al. \cite{cao94} showed that application-controlled file caching
@@ -129,6 +130,32 @@
     This implementation effort has caused problems with hardware compatability
     for libOS projects and thus mostly limited their relevance to the
     research domain \cite{madhavapeddy13}.
+
+  \subsection{Unikernels}
+    OS virtualisation can overcome both of the major disadvantages of libOSs
+    mentioned in \refsec{sec:libOS}.
+    The lack of resource isolation between applications can be avoided by
+    dedicating a seperate virtual machine (VM) to each application.
+    This delegates resource isolation from the OS level to the hypervisor.
+    The hypervisor offers a much simpler, less fine grained interface than
+    a conventional OS, consisting of virtual CPUs and memory pages, 
+    rather than the process-oriented approach in conventional OSs \cite{madhavapeddy13-2}.
+    Dedicating a seperate VM to each application also leaves more room
+    to specialize the VM to its particular purpose.
+    The problem of hardware compatability of libOSs can also be overcome
+    with virtualization. The libOS only has to implement drivers for
+    the virtual hardware devices offered by the hypervisor.
+    The hypervisor is then responsibel for driving the ever changing physical
+    hardware.
+
+    Madhavapeddy et al. introduced the term unikernel in a paper 
+    published in 2013 \cite{madhavapeddy13}.
+    Here unikernels are decribed as an approach to deploy cloud services
+    using specialised single-purpose libOS VMs running directly 
+    on the hypervisor \cite{madhavapeddy13}.
+
+
+    
 
 
 \begin{figure}[htbp]
