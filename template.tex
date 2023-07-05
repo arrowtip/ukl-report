@@ -154,36 +154,50 @@
     using specialised single-purpose libOS VMs running directly 
     on the hypervisor \cite{madhavapeddy13}.
     
-    Deploying a service using a unikernel can offer significant
-    performance advantages. 
-    Memcached running on a unikernel TCP/IP stack
-    demonstrated a 200\% throughput improvement compared to Linux \cite{schatzberg16},
-    unikernels deployed within a microVM have shown six to ten times shorter
-    boot times over containers \cite{koller17} and a micropython unikernel reached an image
-    size of 1MB while requireing 8MB of memory to run \cite{manco17}.
+    \subsubsection{Performance and size}
+      Deploying a service using a unikernel can offer significant
+      performance advantages. 
+      Memcached running on a unikernel TCP/IP stack
+      demonstrated a 200\% throughput improvement compared to Linux \cite{schatzberg16},
+      unikernels deployed within a microVM have shown six to ten times shorter
+      boot times over containers \cite{koller17} and a micropython unikernel reached an image
+      size of 1MB while requireing 8MB of memory to run \cite{manco17}.
 
-    Further the security of an appliance can also be improved by using a unikernel.
-    About 70\% of vulnerabilities in Windows that Microsoft assigns a CVE each year
-    are memory safety issues \cite{msrc-19-07}.
-    Unikernels written in high level programming languages with a strong type system 
-    can use high level language features for memory management to negate a large
-    portion of these vulnerabilities \cite{madhavapeddy13, lankes19}.
-    MirageOS \cite{madhavapeddy13}, a unikernel written in OCaml, can be sealed \cite{hunt07} at runtime,
-    thus preventing any code not present at compile time from being executed.
-    MirageOS further implements compile-time address space randomization to defend against
-    return-oriented programming attacks and save on runtime complexity.
-    This is justified by the fact that for unikernels reconfiguring the appliance 
-    means recompiling it, potentially for every deployment \cite{madhavapeddy13}.
+    \subsubsection{Thread model}
+      Unikernels are per definition concerned with applications that provide network
+      facing services. 
+      The focus on virtual hardware and deployment to a hypervisor
+      often implies usage in a multi-tenant datacenter.
+      Here the provider of the datacenter is trusted not to be malisious.
+      Other tenants and internet-connected hosts in general are seen as 
+      a potential attacker.
+      Internally the hypervisor is used as the sole unit of isolation, 
+      rather than adopting a multi-user access control model as most general purpose OSs do.
+      External entities the unikernel communicates with are trusted through
+      protocol libraries such as SSL or SSH \cite{madhavapeddy13}.
 
-    Another aspect of unikernel security is that the chance for a common exploit is lower.
-    An exploit found in the linux kernel can potentially affect all machines running Linux
-    due to them sharing a vast majority of their code.
-    Each unikernel however is specialized to suit the needs of only one application thus
-    sharing less code with other appliances using the same unikernel.
-    The smaller amount of shared code decreases the probability of an exploit being applicable
-    to many unikernel appliances.
+    \subsubsection{Security}
+      About 70\% of vulnerabilities in Windows, a general purpose OS written in C/C++,
+      that Microsoft assigns a CVE each year are memory safety issues \cite{msrc-19-07}.
+      Unikernels written in high level programming languages with a strong type system 
+      can use high level language features for memory management to negate a large
+      portion of these vulnerabilities \cite{madhavapeddy13, lankes19}.
+      MirageOS \cite{madhavapeddy13}, a unikernel written in OCaml, can be sealed \cite{hunt07} at runtime,
+      thus preventing any code not present at compile time from being executed.
+      MirageOS further implements compile-time address space randomization to defend against
+      return-oriented programming attacks and save on runtime complexity.
+      This is justified by the fact that for unikernels reconfiguring the appliance 
+      means recompiling it, potentially for every deployment \cite{madhavapeddy13}.
 
-    
+      Another aspect of unikernel security is that the chance for a common exploit is lower.
+      An exploit found in the linux kernel can potentially affect all machines running Linux
+      due to them sharing a vast majority of their code.
+      Each unikernel however is specialized to suit the needs of only one application thus
+      sharing less code with other appliances using the same unikernel.
+      The smaller amount of shared code decreases the probability of an exploit being applicable
+      to many unikernel appliances.
+
+  \subsection{Categorisation of unikernels} 
 
     
 
