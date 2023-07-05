@@ -153,10 +153,21 @@
     Here unikernels are described as an approach to deploy cloud services
     using specialised single-purpose libOS VMs running directly 
     on the hypervisor \cite{madhavapeddy13}.
+
+    Despite the benefits of the unikernel approach, they have not yet been widely adopted
+    outside of the research and experimental domain.
+    This could be attributed to the engeneering burden of porting existing software
+    to an environment with no or only partial support for legacy software interfaces \cite{raza19}.
     
     \subsubsection{Performance and size}
       Deploying a service using a unikernel can offer significant
-      performance advantages. 
+      performance advantages.
+      Typical optimisations other than using libraries specialised for the given
+      application inlcude avoiding ring transition overheads \cite{maeda2003},
+      leveraging the single address space to pass pointers rather than copying data \cite {schatzberg16},
+      deferring preemption in latency sensitive routines,
+      exploiting application knowledge to remove code that is never executed \cite{madhavapeddy13},
+      and cross layer optimization between kernel and application code \cite{raza19}.
       Memcached running on a unikernel TCP/IP stack
       demonstrated a 200\% throughput improvement compared to Linux \cite{schatzberg16},
       unikernels deployed within a microVM have shown six to ten times shorter
@@ -177,6 +188,15 @@
       protocol libraries such as SSL or SSH \cite{madhavapeddy13}.
 
     \subsubsection{Security}
+      A problem with images based on a general purpose OSs is that misconfiguration can
+      leave unneeded or unnecessary services running. 
+      These services can significantly increase the remote attack surface.
+      When creating an appliance using the unikernel approach only the libraries
+      needed by the particular application are included in the final image.
+      Thus no unnecessary services are included in the final image.
+      Further this can also drastically deacrease the amount of code included and thus the chance
+      for a vulnerability in the code.
+      
       About 70\% of vulnerabilities in Windows, a general purpose OS written in C/C++,
       that Microsoft assigns a CVE each year are memory safety issues \cite{msrc-19-07}.
       Unikernels written in high level programming languages with a strong type system 
@@ -197,9 +217,26 @@
       The smaller amount of shared code decreases the probability of an exploit being applicable
       to many unikernel appliances.
 
-  \subsection{Categorisation of unikernels} 
+    \subsubsection{Categorisation of unikernels} 
+      \textit{Clean slate} unikernels are written from scratch.
+      Here the unikernel designers have full control over the language
+      and the methodology used \cite{raza19}.
+      Thus the unikernel can be specialised to an abitrary degree to service the needs
+      of a particular class of applications.
+      The interface available to the application can also be choosen freely.
 
-    
+      In \textit{strip down} unikernels an existing kernel code base is forked
+      and all functionality not needed for the unikernel is removed.
+      The interfaces and general purpose libraries can be perserved to some degree
+      to make porting of existing applications written for the original kernel
+      over to the unikernel easier. 
+      This generality however comes at the cost of loosing room for specialisation,
+      efficient pathways and fine-tuned implementation.
+      The creation of an out-of-tree fork of an existing OS comes with the burden of
+      having to manually port updates from the original OS to the unikernel at regular intervals
+      in order to keep the support for existing applications \cite{raza19}.
+      
+
 
 
 \begin{figure}[htbp]
