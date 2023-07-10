@@ -236,6 +236,29 @@
       having to manually port updates from the original OS to the unikernel at regular intervals
       in order to keep the support for existing applications \cite{raza19}.
       
+\section{Related Work}\label{sec:relwork} 
+  \subsection{Kernel Mode Linux}
+    Kernel Mode Linux (KML) is an operating system that allows
+    execution of user processes in kernel mode on IA-32 CPUs.
+    Based on the observation that system calls can be 36 times slower
+    than function calls \cite{maeda2003} KML allows applications to execute in
+    kernel mode, thus allowing the usage of function calls instead of system calls.
+    An application executing in kernel mode would be capable of accessing kernel
+    memory and compromise the integrity of the system.
+    To prevent this KML uses TALx86 a typed assembly language.
+    The authors of KML prove that using the typed assembly language guarantees the 
+    same amount of safety as using traditional hardware-based protection of the kernel \cite{maeda2003}.
+    In order to benefit from that safety applications for KML have to be written in
+    either TALx86 or Popcorn, a safe dialect of the C programming language.
+    Here instead of using system calls the programmer can now use function calls for improved performance.
+
+    Existing applications can also be executed in kernel mode but do not come with
+    the mentioned safety guarantees.
+    This is made possible by adding a new branch to the system call invocaion multiplexer
+    that invokes system calls with direct function calls \cite{maeda2003}.
+    The multiplexer executes additional instructions to invoke the system call however, 
+    so this mechanism is not optimal but still sudiciently fast compared to regular system call
+    invokation.
 
 
 
@@ -270,7 +293,6 @@ while (!sleep)
 \caption{Sample figure automatically from Windows prn.\label{plot:fig}}
 \end{figure}
 
-\section{Related Work}\label{sec:relwork} 
 
 Works \cite{xen03virtualization} and \cite{pratt2005xaa} are relevant but
 different.
