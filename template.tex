@@ -260,6 +260,25 @@
     so this mechanism is not optimal but still sudiciently fast compared to regular system call
     invokation.
 
+  \subsection{Lupine Linux}
+    Lupine Linux tries to achive unikernel-like performance and benefits in Linux.
+    This is achieved through, one, specialization by using the existing Kconfig 
+    configuration mechanism of the Linux kernel, 
+    and two, system call overhead elimination using KML.
+
+    For specialisation only 283 of the 15,953 Kconfig configuration options where
+    selected as a base configuration \cite{kuo20}.
+    With a total of 19 different additional options the top 20 most popular cloud applications,
+    determined through Dockerhub download numbers, could all be succesfully executed.
+
+    In benchmarks Lupine Linux outperformed AWS Firecracker's MicroVM, a lightweight 
+    kernel image for general cloud application. 
+    Lupine Linux also outperformed OSv \cite{osv}, 
+    one the POSIX-like unikernels used for reference \cite{kuo20}.
+
+
+
+
 
 
 \begin{figure}[htbp]
