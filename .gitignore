@@ -5,3 +5,6 @@
 *.log
 *.out
 *.pdf
+*.fls
+*.synctex.gz
+*fdb_latexmk

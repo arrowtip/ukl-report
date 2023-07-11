@@ -217,7 +217,7 @@
       The smaller amount of shared code decreases the probability of an exploit being applicable
       to many unikernel appliances.
 
-    \subsubsection{Categorisation of unikernels} 
+    \subsubsection{Categorisation of unikernels}\label{sec:categories-of-unikernels}
       \textit{Clean slate} unikernels are written from scratch.
       Here the unikernel designers have full control over the language
       and the methodology used \cite{raza19}.
@@ -276,6 +276,30 @@
     Lupine Linux also outperformed OSv \cite{osv}, 
     one the POSIX-like unikernels used for reference \cite{kuo20}.
 
+\section{Approach}\label{sec:approach}
+  \subsection{Goals}
+    The goal of UKL is similar to that of Lupine Linux, in that it aims
+    to bring the benefits promised by unikernels to the Linux kernel.
+    UKL tries to achieve this while one, maintaining the rich support for hardware devices of Linux.
+    Two, UKL aims at retaining the compatability with existing legacy software for the Linux kernel.
+    And three, UKL want to preserve the ecosystem of tools for testing and debugging the kernel.
+    Preserving this ecosystem and keeping the changes to the Linux kernel als minimal as possible
+    would also increase the chance of UKL to be accepted by Linux community.
+    As mentioned in \refsec{sec:categories-of-unikernels}, manually porting updates from
+    the Linux kernel to UKL would require a continious effort.
+    To get around this the authors of UKL aim to have UKL included in the upstream Linux kernel
+    \cite{ukl-redhat-post}.
+
+    In a previous paper \cite{raza19} the authors of the UKL paper \cite{raza23}
+    observed that applications that require high-performance IO use frameworks
+    to bypass the kernel and gain unimpeded access to hardware devices \cite{raza19}.
+    This combined with the promised benefits of unikernels creates a need to act
+    for the Linux community in order to stay dominant for cloud computing, according to the authors.
+    The goal of UKL is to provide the proof that Linux can be adapted to suit the new demands of
+    cloud computing and retain its dominant position in the world of modern cloud computing.
+
+\section{Conclusion}\label{sec:conclusion}
+
 
 
 
@@ -316,9 +340,6 @@ while (!sleep)
 Works \cite{xen03virtualization} and \cite{pratt2005xaa} are relevant but
 different.
 
-\section{Approach}
-
-\section{Conclusion}\label{sec:conclusion}
 
 \bibliographystyle{plain}
 \bibliography{template}
