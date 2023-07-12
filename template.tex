@@ -174,7 +174,7 @@
       boot times over containers \cite{koller17} and a micropython unikernel reached an image
       size of 1MB while requireing 8MB of memory to run \cite{manco17}.
 
-    \subsubsection{Thread model}
+    \subsubsection{Thread model}\label{sec:thread-model}
       Unikernels are per definition concerned with applications that provide network
       facing services. 
       The focus on virtual hardware and deployment to a hypervisor
@@ -277,7 +277,7 @@
     one the POSIX-like unikernels used for reference \cite{kuo20}.
 
 \section{Approach}\label{sec:approach}
-  \subsection{Goals}
+  \subsection{Goals}\label{sec:goals}
     The goal of UKL is similar to that of Lupine Linux, in that it aims
     to bring the benefits promised by unikernels to the Linux kernel.
     UKL tries to achieve this while one, maintaining the rich support for hardware devices of Linux.
@@ -310,6 +310,18 @@
     with just a recompilation.
     For more perfomance improvement the developer can choose to modify the application, exploiting the
     knowledge about the application to invoke kernel functionality directly.
+
+  \subsection{Base model}
+    In the base model an application is compiled and statically linked with both 
+    the UKL kernel and a modified version of glibc to create a bootable image.
+    When executed this image will have a UKL-optimised process executing the supplied 
+    application in kernel-mode.
+    Different to most other unikernels, in UKL regular user-level processes are still possible.
+    This is crucial to support debugging and testig tools and initialization scripts needed by
+    some applications (comp. \refsec{sec:goals}).
+    User-level processes are however not protected from the UKL-optimised one.
+    This is in line with the security model of unikernels where all work that has to 
+    be protected is isolated through the hypervisor (\refsec{sec:thread-model}).
 
 
 \section{Conclusion}\label{sec:conclusion}
