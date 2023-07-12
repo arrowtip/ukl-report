@@ -298,6 +298,20 @@
     The goal of UKL is to provide the proof that Linux can be adapted to suit the new demands of
     cloud computing and retain its dominant position in the world of modern cloud computing.
 
+  \subsection{Incremental approach}
+    UKL follows a so-called incremental approach. 
+    Each increment is less general purpose but can bring performance benefits.
+    The lowest increment is the base model which perserves almost all the 
+    invariants and assumptions of applications written for Linux.
+    The performance benefit of the base model is negligible.
+    After the application runs on the base model the developer can choose to try different
+    configuration options for a higher performance improvement.
+    These configuration options might not work with every application, but are easy to try out
+    with just a recompilation.
+    For more perfomance improvement the developer can choose to modify the application, exploiting the
+    knowledge about the application to invoke kernel functionality directly.
+
+
 \section{Conclusion}\label{sec:conclusion}
 
 
