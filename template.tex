@@ -168,6 +168,7 @@
       deferring preemption in latency sensitive routines,
       exploiting application knowledge to remove code that is never executed \cite{madhavapeddy13},
       and cross layer optimization between kernel and application code \cite{raza19}.
+
       Memcached running on a unikernel TCP/IP stack
       demonstrated a 200\% throughput improvement compared to Linux \cite{schatzberg16},
       unikernels deployed within a microVM have shown six to ten times shorter
@@ -318,10 +319,25 @@
     application in kernel-mode.
     Different to most other unikernels, in UKL regular user-level processes are still possible.
     This is crucial to support debugging and testig tools and initialization scripts needed by
-    some applications (comp. \refsec{sec:goals}).
+    some applications (see \refsec{sec:goals}).
     User-level processes are however not protected from the UKL-optimised one.
     This is in line with the security model of unikernels where all work that has to 
     be protected is isolated through the hypervisor (\refsec{sec:thread-model}).
+
+    \subsubsection{Address space layout}
+      Most unikernels have a single address space due to their single process nature.
+      UKL differs in that it retains the split of the virtual address space into kernel and user-space.
+      For the UKL-optimised process the code and data segments move to kernel space because
+      the application and the kernel are compiled and linked together.
+      All other memory regions of the UKL-optimised process remain in user-space.
+
+      This layout could be problematic for applications with large initialized data sections
+      that are pinned in UKL due to being in kernel-space.
+      According to the authors of the UKL-paper changing this layout would have required changes
+      to the Linux kernel that may be difficult to upstream (see \refsec{sec:goals}).
+
+      The virtual address space of regular user-level processes remains unchanged from
+      the classic Linux virtual address space layout.
 
 
 \section{Conclusion}\label{sec:conclusion}
