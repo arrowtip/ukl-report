@@ -13,6 +13,7 @@
 % TODO: Change draft to final before submitting final version.
 \usepackage[draft]{styles/ka-style}
 \usepackage{cite,xspace,ifthen,graphicx,listings,url}
+\usepackage[inkscapeformat=pdf]{svg}
 
 \usepackage[
    pdfauthor={Author},
@@ -339,6 +340,24 @@
       The virtual address space of regular user-level processes remains unchanged from
       the classic Linux virtual address space layout.
 
+    \subsubsection{Transition on system calls}
+      The way regular user-level processes access kernel functionality remains unchanged in UKL.
+      The UKL-optimised process also still undergoes the regular entry and exit code of
+      the Linux kernel when accessing kernel functionality.
+      This code includes changing the execution stack to a kernel stack, scheduling and signal handling.
+      The only difference to the transition compared to Linux is that the UKL-optimised process uses
+      \code{call} instead of \code{syscall} to jump into the entry code and \code{ret} instead
+      of \code{sysret} or \code{iret} to return from the exit code. 
+      Figure \ref{fig:ukl-transition} gives a graphic overwiev.
+
+      \begin{figure*}[hbt]
+        \centering
+        \includesvg[inkscapelatex=false, width=\textwidth]{fig/entry-exit}
+        \caption{Transition between applications and kernel in UKL base model}
+        \label{fig:ukl-transition}
+      \end{figure*}
+
+
 
 \section{Conclusion}\label{sec:conclusion}
 
@@ -371,13 +390,6 @@
 while (!sleep)
 	sleep++;
 \end{lstlisting}
-
-\begin{figure}[hbt]
-\centering
-\includegraphics[scale=.7,clip]{fig/template}
-\caption{Sample figure automatically from Windows prn.\label{plot:fig}}
-\end{figure}
-
 
 Works \cite{xen03virtualization} and \cite{pratt2005xaa} are relevant but
 different.
