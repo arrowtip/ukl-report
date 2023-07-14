@@ -348,6 +348,9 @@
       The only difference to the transition compared to Linux is that the UKL-optimised process uses
       \code{call} instead of \code{syscall} to jump into the entry code and \code{ret} instead
       of \code{sysret} or \code{iret} to return from the exit code. 
+      The differences in behaviour between \code{call} and \code{syscall} and 
+      \code{ret} and \code{sysret} are handled through a new system call entry point, 
+      \code{ukl\_entry\_syscall\_64}, that is used by the UKL-optimised process.
       Figure \ref{fig:ukl-transition} gives a graphic overwiev.
 
       \begin{figure*}[hbt]
@@ -362,26 +365,6 @@
 \section{Conclusion}\label{sec:conclusion}
 
 
-
-
-
-
-\begin{figure}[htbp]
-  \centering
-  \fbox{\parbox{.8\columnwidth}{
-      Here you can include a sample figure.  Use something like
-      \begin{center}
-        \code{$\backslash$includegraphics[scale=.8]\{template\}}
-      \end{center}
-      to include an encapsulated postscript figure.  The \emph{scale}
-      argument can be used for scaling the picture, although it
-      may scale the font incorrectly.
-    }}
-  \caption{Sample Figure}
-  \label{fig:sample}
-\end{figure}
-
-
 \lstset{language=C, basicstyle=\ttfamily,
         string=[b]', showspaces=false, showtabs=false,
         caption={A sample code snippet}, captionpos=b}
@@ -390,10 +373,6 @@
 while (!sleep)
 	sleep++;
 \end{lstlisting}
-
-Works \cite{xen03virtualization} and \cite{pratt2005xaa} are relevant but
-different.
-
 
 \bibliographystyle{plain}
 \bibliography{template}
