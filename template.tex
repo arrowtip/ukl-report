@@ -318,6 +318,10 @@
     the UKL kernel and a modified version of glibc to create a bootable image.
     When executed this image will have a UKL-optimised process executing the supplied 
     application in kernel-mode.
+    Although in kernel-mode the UKL-optimised process is still executed differently to kernel code,
+    with transition code to access kernel routines and dynamic non-pinned stacks in user-space.
+    The UKL-optimised process is per default also fully preemptable.
+
     Different to most other unikernels, in UKL regular user-level processes are still possible.
     This is crucial to support debugging and testig tools and initialization scripts needed by
     some applications (see \refsec{sec:goals}).
@@ -359,6 +363,26 @@
         \caption{Transition between applications and kernel in UKL base model}
         \label{fig:ukl-transition}
       \end{figure*}
+
+  \subsection{Configuration options}
+    The UKL-paper lists and describes configuration options to bypass the entry and exit code
+    on system calls, minimize the amount of stack switches performed, and use a regular
+    \code{ret} instruction instead of \code {iret} to return from interrpts.
+    These configuration options are described as examples to demonstrate the concept
+    and evaluate the performance gain by the authors.
+
+  \subsection{Application modification}
+    In addition to the configuration options a developer can explore more specialised optimisations
+    by modifing the application.
+    These optimisations are typically based on knowledge about the specific application.
+    For example, if an application only uses TCP, a write to a socket will always be to
+    a TCP socket.
+    By calling the \code{tcp\_sendmsg} routine directly the TCP/UDP polymorphism in the kernel
+    can be bypassed.
+    
+    UKL offers a per-thread flag that causes the thread to be treated like a kernel thread.
+    By setting this flag a thread on a performance critical path can avoid preemption
+    until its task is completed.
 
 
 
