@@ -315,12 +315,12 @@
     For more perfomance improvement the developer can choose to modify the application, exploiting the
     knowledge about the application to invoke kernel functionality directly.
 
-  \subsection{Base model}
+  \subsection{Base model}\label{sec:base-model}
     In the base model an application is compiled and statically linked with both 
     the UKL kernel and a modified version of glibc to create a bootable image.
     When executed this image will have a UKL-optimised process executing the supplied 
-    application in kernel-mode.
-    Although in kernel-mode the UKL-optimised process is still executed differently to kernel code,
+    application in kernel mode.
+    Although in kernel mode the UKL-optimised process is still executed differently to kernel code,
     with transition code to access kernel routines and dynamic non-pinned stacks in user-space.
     The UKL-optimised process is per default also fully preemptable.
 
@@ -346,7 +346,7 @@
       The virtual address space of regular user-level processes remains unchanged from
       the classic Linux virtual address space layout.
 
-    \subsubsection{Transition on system calls}
+    \subsubsection{Transition on system calls}\label{sec:transition}
       The way regular user-level processes access kernel functionality remains unchanged in UKL.
       The UKL-optimised process also still undergoes the regular entry and exit code of
       the Linux kernel when accessing kernel functionality.
@@ -369,11 +369,11 @@
   \subsection{Configuration options}
     The UKL-paper lists and describes configuration options to bypass the entry and exit code
     on system calls, minimize the amount of stack switches performed, and use a regular
-    \code{ret} instruction instead of \code {iret} to return from interrpts.
+    \code{ret} instruction instead of \code{iret} to return from interrpts.
     These configuration options are described as examples to demonstrate the concept
     and evaluate the performance gain by the authors.
 
-  \subsection{Application modification}
+  \subsection{Application modification}\label{sec:application-modification}
     In addition to the configuration options a developer can explore more specialised optimisations
     by modifing the application.
     These optimisations are typically based on knowledge about the specific application.
@@ -391,8 +391,49 @@
     The authors of the UKL-paper hope that communities interested in non-x86 architectures
     will take on porting UKL to their platforms if UKL is accepted upstream.
 
+    \subsubsection{Base model}
+      As mentioned in \refsec{sec:transition}, the usage of \code{call} instead of \code{syscall}
+      changes a kernel invariant and thus additional code is needed to resolve that.
+      This is done in the new \code{ukl\_entry\_syscall\_64} entry point, which is called by
+      UKL application code
+      The return address for system calls is stored in \code{rcx} register which is then 
+      pushed to the kernel stack.
+      The \code{call} instruction stores the return address on the user stack.
+      The authors' solution to this problem is to simply update the return address on the kernel
+      stack with the value stored on the user stack \cite{ukl-github-entry}.
 
+      In the entry/exit code the execution mode of the calling thread has to be considered,
+      because the UKL-optimised application always executes in kernel mode (see \refsec{sec:base-model}).
+      The kernel tracks the execution mode through the \code{CS} register.
+      To track the execution mode of UKL threads the authors of the UKL paper added a 
+      new per-thread variable \code{in\_user} \cite{ukl-github-entry}.
 
+      \textbf{entry code:}
+      If \code{in\_user} is zero then the calling thread is a regular non-UKL user-level thread.
+      In this case the kernel just executes the system call without any UKL modification.
+
+      If \code{in\_user} is two then the calling thread is a UKL thread executing user code.
+      Since the thread is a UKL thread it executes in kernel mode and thus the value of the 
+      \code{CS} register was \code{KERNEL\_CS}.
+      This value was pushed to the kernel stack in the \code{ukl\_entry\_SYSCALL\_64} entry point.
+      In order for the thread to be treated like a user-level thread this stored \code{CS} 
+      value has to be changed to the user \code{CS} value.
+      The \code{in\_user} value is then set to one because the thread is now executing kernel code.
+
+      If \code{in\_user} is one then the calling thread is a UKL thread executing kernel code.
+      Since the thread is a UKL-optimised it executes in kernel mode and thus the \code{CS} value
+      stored on stack is already correct (\code{KERNEL\_CS}).
+      The \code{in\_user} value is also already correct.
+
+      \textbf{exit code:}
+      If \code{in\_user} is zero, then the thread is a user-level non-UKL thread and should return
+      without any modification.
+
+      If \code{in\_user} is one, then the thread is a UKL thread and should thus remain in 
+      kernel mode execution.
+      However a regular \code{iret} would take the thread back to user mode.
+      To avoid that the \code{CS} value saved on stack is changed to \code{KERNEL\_CS}.
+      Then \code{in\_user} is set to two, because the thread is now returning to user code.
 
 
 \section{Conclusion}\label{sec:conclusion}
