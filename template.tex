@@ -406,13 +406,15 @@
       because the UKL-optimised application always executes in kernel mode (see \refsec{sec:base-model}).
       The kernel tracks the execution mode through the \code{CS} register.
       To track the execution mode of UKL threads the authors of the UKL paper added a 
-      new per-thread variable \code{in\_user} \cite{ukl-github-entry}.
+      new per-thread variable \code{in\_user} \cite{ukl-github-entry, ukl-github-inuser-add}.
 
-      \textbf{entry code:}
-      If \code{in\_user} is zero then the calling thread is a regular non-UKL user-level thread.
+      \textbf{Entry code:}
+      If \code{in\_user} is zero then the calling thread is a regular non-UKL 
+      user-level thread cite{ukl-github-inuser-getter-setter}.
       In this case the kernel just executes the system call without any UKL modification.
 
-      If \code{in\_user} is two then the calling thread is a UKL thread executing user code.
+      If \code{in\_user} is two then the calling thread is a UKL thread executing 
+      user code \cite{ukl-github-inuser-getter-setter}.
       Since the thread is a UKL thread it executes in kernel mode and thus the value of the 
       \code{CS} register was \code{KERNEL\_CS}.
       This value was pushed to the kernel stack in the \code{ukl\_entry\_SYSCALL\_64} entry point.
@@ -420,12 +422,13 @@
       value has to be changed to the user \code{CS} value.
       The \code{in\_user} value is then set to one because the thread is now executing kernel code.
 
-      If \code{in\_user} is one then the calling thread is a UKL thread executing kernel code.
+      If \code{in\_user} is one then the calling thread is a UKL thread executing 
+      kernel code cite{ukl-github-inuser-getter-setter}.
       Since the thread is a UKL-optimised it executes in kernel mode and thus the \code{CS} value
       stored on stack is already correct (\code{KERNEL\_CS}).
       The \code{in\_user} value is also already correct.
 
-      \textbf{exit code:}
+      \textbf{Exit code:}
       If \code{in\_user} is zero, then the thread is a user-level non-UKL thread and should return
       without any modification.
 
