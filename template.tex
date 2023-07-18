@@ -366,12 +366,14 @@
         \label{fig:ukl-transition}
       \end{figure*}
 
-  \subsection{Configuration options}
+  \subsection{Configuration options}\label{sec:configuration-options}
     The UKL-paper lists and describes configuration options to bypass the entry and exit code
-    on system calls, minimize the amount of stack switches performed, and use a regular
-    \code{ret} instruction instead of \code{iret} to return from interrpts.
-    These configuration options are described as examples to demonstrate the concept
-    and evaluate the performance gain by the authors.
+    on system calls (\code{UKL\_BP}), minimize the amount of stack switches performed 
+    by executing user and kernel code on the same stack (\code{CONFIG\_UKL\_SAME\_STACK}),
+    and use a regular \code{ret} instruction instead of \code{iret} to return from 
+    interrpts (\code{CONFIG\_UKL\_USE\_RET}).
+    These configuration options are described by the authors as examples to demonstrate the concept
+    and evaluate the performance gain.
 
   \subsection{Application modification}\label{sec:application-modification}
     In addition to the configuration options a developer can explore more specialised optimisations
@@ -391,11 +393,11 @@
     The authors of the UKL-paper hope that communities interested in non-x86 architectures
     will take on porting UKL to their platforms if UKL is accepted upstream.
 
-    \subsubsection{Base model}
+    \subsubsection{Base model}\label{sec:imp:base-model}
       As mentioned in \refsec{sec:transition}, the usage of \code{call} instead of \code{syscall}
       changes a kernel invariant and thus additional code is needed to resolve that.
       This is done in the new \code{ukl\_entry\_syscall\_64} entry point, which is called by
-      UKL application code
+      UKL application code.
       The return address for system calls is stored in \code{rcx} register which is then 
       pushed to the kernel stack.
       The \code{call} instruction stores the return address on the user stack.
@@ -410,7 +412,7 @@
 
       \textbf{Entry code:}
       If \code{in\_user} is zero then the calling thread is a regular non-UKL 
-      user-level thread cite{ukl-github-inuser-getter-setter}.
+      user-level thread \cite{ukl-github-inuser-getter-setter}.
       In this case the kernel just executes the system call without any UKL modification.
 
       If \code{in\_user} is two then the calling thread is a UKL thread executing 
@@ -437,6 +439,47 @@
       However a regular \code{iret} would take the thread back to user mode.
       To avoid that the \code{CS} value saved on stack is changed to \code{KERNEL\_CS}.
       Then \code{in\_user} is set to two, because the thread is now returning to user code.
+
+    \subsubsection{Bypassing entry/exit code}
+      In order not to explode the volume of this report I will only describe the implementation
+      of the \code{UKL\_BP} configuration option, used to bypass the entry and exit code
+      on system calls.
+
+      As mentioned in \refsec{sec:application-modification} a UKL-optimized application can
+      always call the internal system call function directly without going through the entry and
+      exit code.
+      Since the entry and exit code is, among other things, responsible for basic system services,
+      such as RCU handling, switching the execution stack to a kernel stack, scheduling and signal
+      handling, bypassing the entry and exit code can result in a faster system call.
+
+      For the bypass the authors of UKL modified the \code{SYSCALL\_DEFINE} macro to add
+      a wrapper function named \code{ukl\_bp\_<syscall name>} to each system call \cite{ukl-github-bypass}.
+      In glibc the authors added a check to call this wrapper function 
+      directly if bypassing is enabled \cite{ukl-glibc-bypass}.
+      If bypassing is disabled the regular UKL syscall entry point is used (see \refsec{sec:imp:base-model}).
+      
+      Bypassing the entry and exit code also bypasses the stack switch from user to kernel stack and back.
+      If the configuration option to avoid stack switches (see \refsec{sec:configuration-options}) is
+      turned on, then this is not a problem.
+      Otherwise a stack switch should occur.
+      To achieve that, the authors created functions to conduct a stack switch from user to kernel stack 
+      or from kernel to user stack.
+      These stack switch functions are then used in the system call wrapper function created earlier, 
+      given that the \code{CONFIG\_UKL\_SAME\_STACK} is turned off \cite{ukl-github-bypass}.
+
+      Bypassing the entry and exit code can create a performance benefit, because the book keeping
+      (RCU handling, scheduling, signal handling) usually done by the kernel on a system call is also
+      bypassed.
+      Since this book keeping has to be performed at some point, the authors of UKL added a configurable
+      limit for how often the entry/exit code is bypassed before going through the regular entry 
+      and exit code \cite{ukl-github-bypass}.
+      Setting this limit low will grant less performance benefit but but the book keeping is performed
+      more frequent.
+      Setting the limit higher can lead to a greater performance gain, but the tail latency for system 
+      calls might increase because a backlog of book keeping that has to be done can build 
+      up \cite{ukl-github-bypass}.
+
+      
 
 
 \section{Conclusion}\label{sec:conclusion}
