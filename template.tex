@@ -479,10 +479,45 @@
       calls might increase because a backlog of book keeping that has to be done can build 
       up \cite{ukl-github-bypass}.
 
-      
-
-
 \section{Conclusion}\label{sec:conclusion}
+  \subsection{Performance}
+    The UKL paper focuses on runtime performance.
+    Other benefits demonstrated by other unikernel research, such as security, boot time or
+    resource utilization, are neither targeted nor evaluated.
+    
+    \subsubsection{System call overhead elemination}
+      The authors of the UKL paper compared unmodified Linux to the UKL base model
+      and the UKL base model with \code{UKL\_BP} enabled with \code{getppid}, \code{read},
+      \code{write}, \code{sendto} and \code{recvfrom} system calls.
+      The base performance is evaluated with 1 Byte payloads for \code{read},
+      \code{write}, \code{sendto} and \code{recvfrom}.
+      Here the performance improvement using the base model is below 5\%.
+      The authors credit this to the high degree of optimization of the \code{syscall}
+      instruction.
+      Using the \code{UKL\_BP} optimization however reaches a performance benefit of
+      83\% for \code{getppid} and 49\% for \code{read}, indicating that the entry
+      and exit code is the main source of Linux system call latency \cite{raza23}.
+
+      With 8KB payloads for \code{read}, \code{write}, \code{sendto} and \code{recvfrom}
+      the performance improvement of the base model becomes negligible. 
+      The base model with \code{UKL\_BP} enabled however still achieves a performance 
+      improvement of between 11\% for \code{write} and 22\% for \code{recvfrom}.
+
+    \subsubsection{Realistic workloads}
+      Further benchmarks were performed by the authors using Redis, a widely used single-threaded 
+      in-memory database and Memcached, a multi-threaded key-value store.
+
+      Across all tests the UKL base model a negligible or no performance benefit,
+      showing that just replacing \code{syscall} instructions with procedure calls
+      gives no real benefit for real workloads.
+
+      The UKL base model with both \code{UKL\_BP} and \code{CONFIG\_UKL\_USE\_RET}
+      (see \refsec{sec:configuration-options}) turned on delivered a small performance
+      benefit with 12\% throughput improvement for Redis on a physical machine.
+
+
+
+
 
 
 \lstset{language=C, basicstyle=\ttfamily,
