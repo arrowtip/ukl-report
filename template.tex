@@ -531,13 +531,26 @@
       This can be seen to confirm the fear of the Linux kernel maintainer mentioned earlier
       \cite{ukl-rfc-negative}.
 
-     Additionaly the trust in Red Hat has dropped after they announced to paywall the
-     source code for Red Hat Enterprise Linux (RHEL) \cite{redhat-fuckup}.
+      Additionaly the trust in Red Hat has dropped after they announced to paywall the
+      source code for Red Hat Enterprise Linux (RHEL) \cite{redhat-fuckup}.
 
-     Considering all of this, I do not think UKL will be included in the upstream
-     Linux kernel.
+      Considering all of this, I do not think UKL will be included in the upstream
+      Linux kernel.
 
-    \subsubsection{Shortcomings of UKL}
+    \subsubsection{Shortcomings and yet unexplored benefits of UKL}
+      The optimisations for system call overhead elimination and entry/exit code bypassing
+      are based on system call being issued by the modified version of glibc, that
+      the application and the kernel are compiled with.
+      For some languages, like Go, this is a problem, since most system call invocations
+      are done directly by the language runtime and not through glibc \cite{ukl-vs-unicraft}.
+      This means that Go applications can not benefit from any of the optimisations UKL offers,
+      except for application modification.
+      This issue is not addressed in the UKL paper.
+
+      On the other hand UKL could be able to allow the usage of accelerators (GPUs, FPGAs, etc.)
+      in the future \cite{raza23}.
+
+      
       
     
 
