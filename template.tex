@@ -537,7 +537,7 @@
       Considering all of this, I do not think UKL will be included in the upstream
       Linux kernel.
 
-    \subsubsection{Shortcomings and yet unexplored benefits of UKL}
+    \subsubsection{Shortcomings of UKL}
       The optimisations for system call overhead elimination and entry/exit code bypassing
       are based on system call being issued by the modified version of glibc, that
       the application and the kernel are compiled with.
@@ -546,14 +546,6 @@
       This means that Go applications can not benefit from any of the optimisations UKL offers,
       except for application modification.
       This issue is not addressed in the UKL paper.
-
-      On the other hand UKL could be able to allow the usage of accelerators (GPUs, FPGAs, etc.)
-      in the future \cite{raza23}.
-
-      
-      
-    
-
 
 \bibliographystyle{plain}
 \bibliography{template}
