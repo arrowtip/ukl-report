@@ -46,14 +46,14 @@
 \end{abstract}
 
 \section{Introduction}\label{sec:introduction}
-  Modern cloud services are often highly specialised, to the point of a microservice, 
-  where an applications is split up into a collection of loosely coupled services,
+  Modern cloud services are often highly specialised, to the point of a microservice.
+  In a mircoservice architecture, an application is split up into a collection of loosely coupled services,
   that communicate through lightweight protocols and each only fullfill a single purpose.
   These services share a few key demands. They need to be able to communicate 
   efficiently with each other. Since they need to communicate with other services,
   they are exposed to the internet to some degree and thus should be as secure as possible.
   Due to the single purpose nature of the microservices they often execute as a single process.
-  Lastly the image the service is executed with and the memory usage should be as small as possible.
+  Lastly, the image the service is executed with and the memory usage should be as small as possible.
   The services are often executed in a virtual machine on rented hardware, so lower requirements
   in memory and storage can improve the profitability of a service.
   These demands have caused a resurgence of research exploring the concept of 
@@ -70,7 +70,14 @@
   Others borrow code from an existing OS like Drawbridge \cite{porter11} 
   that uses code from Windows.
 
-  UKL uses the Linux kernel as a base but tries to keep the changes minimal
+  UKL uses the Linux kernel as a base to create a unikernel.
+  In the base model a target application can be statically linked and compiled with
+  the modified Linux kernel into a bootable image.
+  On top of the base model configuration options can be enabled to increase the performance
+  for the specific application.
+  For maximal specialisation, the application itself can be modified to use kernel routines
+  directly.
+  UKL tries to keep the changes to the Linux kernel as minimal as possible,
   so that UKL can be maintained with the (general purpose) Linux kernel.
   
 
@@ -80,19 +87,27 @@
     the operating system (OS) defines an interface to use the physical resources
     of the system. 
     This interface hides details about the physical resources behind
-    high-level abstractions like processes, files, addresss spaces 
+    high-level abstractions like processes, files, address spaces 
     and interprocess communication.
     Applications running on the system use this interface and its abstractions
     to utilize the physical resources of the system.
-    The implementation of the abstractions must be general to allow the execution 
+
+    System calls are used to request the services.
+    Before the requested service is executed, the OS performs a switch to a kernel thread
+    to service the request.
+    This is done to prevent the application from influencing the execution of the system service.
+    After the system service has finished, the OS switches execution back to the application thread.
+
+    The implementation of the service abstractions must be general to allow the execution 
     of very different applications.
     The OS also ensures that different applications can execute concurrently, 
     without interfering with each other. 
-    Virtual address spaces are used to allow for simultanious usage of physical memory.
+    Virtual address spaces are used to allow for simultaneous usage of physical memory.
     Access to other resources, such as files and network communication, is controlled
     by the OS.
     This protection requires that applications must not be able
     to modify or replace the implementation of the abstractions supplied by the OS.
+
 
   \subsection{Library operating systems}\label{sec:libOS}
     One of the problems of the fixed abstractions for system resources in general-purpose OSs
@@ -132,7 +147,7 @@
     for example a kernel module.
     This implementation effort has caused problems with hardware compatability
     for libOS projects and thus mostly limited their relevance to the
-    research domain \cite{madhavapeddy13}.
+    research domain \cite{madhavapeddy13, raza19}.
 
   \subsection{Unikernels}
     OS virtualisation can overcome both of the major disadvantages of libOSs
@@ -148,7 +163,7 @@
     The problem of hardware compatability of libOSs can also be overcome
     with virtualization. The libOS only has to implement drivers for
     the virtual hardware devices offered by the hypervisor.
-    The hypervisor is then responsibel for driving the ever changing physical
+    The hypervisor is then responsible for driving the ever changing physical
     hardware.
 
     Madhavapeddy et al. introduced the term unikernel in a paper 
@@ -176,9 +191,9 @@
       demonstrated a 200\% throughput improvement compared to Linux \cite{schatzberg16},
       unikernels deployed within a microVM have shown six to ten times shorter
       boot times over containers \cite{koller17} and a micropython unikernel reached an image
-      size of 1MB while requireing 8MB of memory to run \cite{manco17}.
+      size of 1~MB while requireing 8~MB of memory to run \cite{manco17}.
 
-    \subsubsection{Thread model}\label{sec:thread-model}
+    \subsubsection{Threat model}\label{sec:thread-model}
       Unikernels are per definition concerned with applications that provide network
       facing services. 
       The focus on virtual hardware and deployment to a hypervisor
@@ -202,7 +217,7 @@
       for a vulnerability in the code.
       
       About 70\% of vulnerabilities in Windows, a general purpose OS written in C/C++,
-      that Microsoft assigns a CVE each year are memory safety issues \cite{msrc-19-07}.
+      that Microsoft assigns a CVE to each year are memory safety issues \cite{msrc-19-07}.
       Unikernels written in high level programming languages with a strong type system 
       can use high level language features for memory management to negate a large
       portion of these vulnerabilities \cite{madhavapeddy13, lankes19}.
@@ -214,7 +229,7 @@
       means recompiling it, potentially for every deployment \cite{madhavapeddy13}.
 
       Another aspect of unikernel security is that the chance for a common exploit is lower.
-      An exploit found in the linux kernel can potentially affect all machines running Linux
+      An exploit found in the Linux kernel can potentially affect all machines running Linux
       due to them sharing a vast majority of their code.
       Each unikernel however is specialized to suit the needs of only one application thus
       sharing less code with other appliances using the same unikernel.
