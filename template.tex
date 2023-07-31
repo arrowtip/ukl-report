@@ -48,20 +48,20 @@
 \section{Introduction}\label{sec:introduction}
   Modern cloud services are often highly specialised, to the point of a microservice.
   In a mircoservice architecture, an application is split up into a collection of loosely coupled services,
-  that communicate through lightweight protocols and each only fullfill a single purpose.
+  that communicate through lightweight protocols and each only fullfill a single purpose \cite{madhavapeddy13-2}.
   These services share a few key demands. They need to be able to communicate 
   efficiently with each other. Since they need to communicate with other services,
   they are exposed to the internet to some degree and thus should be as secure as possible.
-  Due to the single purpose nature of the microservices they often execute as a single process.
+  Due to the single purpose nature of the microservices they often execute as a single process \cite{raza19}.
   Lastly, the image the service is executed with and the memory usage should be as small as possible.
   The services are often executed in a virtual machine on rented hardware, so lower requirements
-  in memory and storage can improve the profitability of a service.
+  in memory and storage can improve the profitability of a service \cite{madhavapeddy13}.
   These demands have caused a resurgence of research exploring the concept of 
-  a library operating system (libOS) and the emergence of unikernels. 
+  a library operating system (libOS) and the emergence of unikernels \cite{madhavapeddy13-2}. 
 
   In a libOS a target application is linked with a set of
-  libraries that provide all the services a regular OS would usually provide.
-  The resulting executable can then be deployed directly to hardware.
+  libraries that provide all the services a regular OS would usually provide \cite{madhavapeddy13-2}.
+  The resulting executable can then be deployed directly to hardware \cite{raza19}.
   In 2013 the term \textit{unikernel} was first introduced for libOSs
   for cloud services and deployment to virtual hardware~\cite{madhavapeddy13}.
 
@@ -78,7 +78,7 @@
   For maximal specialisation, the application itself can be modified to use kernel routines
   directly.
   UKL tries to keep the changes to the Linux kernel as minimal as possible,
-  so that UKL can be maintained with the (general purpose) Linux kernel.
+  so that UKL can be maintained with the (general purpose) Linux kernel \cite{raza23}.
   
 
 \section{Background}\label{sec:background}
