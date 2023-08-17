@@ -296,6 +296,14 @@
     one the POSIX-like unikernels used for reference \cite{kuo20}.
 
 \section{Approach}\label{sec:approach}
+  UKL follows a strip down approach (see \refsec{sec:categories-of-unikernels}),
+  where the OS to strip down from is Linux \cite{raza23}.
+  The authors tried to keep the changes to the Linux kernel as minimal as possible
+  in order to preserve the ecosystem around Linux as good as possible \cite{raza23}.
+
+  In order to make transferring applications to UKL easier, the authors adopted an incremental approach,
+  starting with maximum compatibility and minimal performance gain, and from there increasing specialization.
+
   \subsection{Goals}\label{sec:goals}
     The goal of UKL is similar to that of Lupine Linux, in that it aims
     to bring the benefits promised by unikernels to the Linux kernel.
@@ -318,60 +326,61 @@
     cloud computing and retain its dominant position in the world of modern cloud computing.
 
   \subsection{Incremental approach}
-    UKL follows a so-called incremental approach. 
+    UKL follows a so-called incremental approach \cite{raza23}. 
     Each increment is less general purpose but can bring performance benefits.
-    The lowest increment is the base model which preserves almost all the 
-    invariants and assumptions of applications written for Linux.
-    The performance benefit of the base model is negligible.
+    The lowest increment is the \textit{base model} which preserves almost all the 
+    invariants and assumptions of applications written for Linux \cite{raza23}.
+    The performance benefit of the base model is negligible \cite{raza23}.
     After the application runs on the base model the developer can choose to try different
-    configuration options for a higher performance improvement.
+    compile-time configuration options for a higher performance improvement.
     These configuration options might not work with every application, but are easy to try out
-    with just a recompilation.
+    with just a recompilation \cite{raza23}.
     For more performance improvement the developer can choose to modify the application, exploiting the
-    knowledge about the application to invoke kernel functionality directly.
+    knowledge about the application to invoke kernel functionality directly \cite{raza23}.
 
   \subsection{Base model}\label{sec:base-model}
     In the base model an application is compiled and statically linked with both 
-    the UKL kernel and a modified version of glibc to create a bootable image.
+    the UKL kernel and a modified version of glibc to create a bootable image \cite{raza23}.
     When executed this image will have a UKL-optimized process executing the supplied 
-    application in kernel mode.
+    application in kernel mode \cite{raza23}.
     Although in kernel mode the UKL-optimized process is still executed differently to kernel code,
-    with transition code to access kernel routines and dynamic non-pinned stacks in user-space.
-    The UKL-optimized process is per default also fully pre-emptible.
+    with transition code to access kernel routines and dynamic non-pinned stacks in user-space \cite{raza23}.
+    The UKL-optimized process is per default also fully pre-emptible \cite{raza23}.
 
-    Different to most other unikernels, in UKL regular user-level processes are still possible.
+    Different to other unikernels, in UKL multiple regular user-level processes are still possible \cite{raza23}.
     This is crucial to support debugging and testing tools and initialization scripts needed by
     some applications (see \refsec{sec:goals}).
-    User-level processes are however not protected from the UKL-optimized one.
+    User-level processes are however not protected from the UKL-optimized one \cite{raza23}.
     This is in line with the security model of unikernels where all work that has to 
     be protected is isolated through the hypervisor (\refsec{sec:thread-model}).
 
     \subsubsection{Address space layout}
       Most unikernels have a single address space due to their single process nature.
-      UKL differs in that it retains the split of the virtual address space into kernel and user-space.
+      UKL differs in that it retains the split of the virtual address space into kernel 
+      and user-space \cite{raza23}.
       For the UKL-optimized process the code and data segments move to kernel space because
       the application and the kernel are compiled and linked together.
-      All other memory regions of the UKL-optimized process remain in user-space.
+      All other memory regions of the UKL-optimized process remain in user-space \cite{raza23}.
 
       This layout could be problematic for applications with large initialized data sections
-      that are pinned in UKL due to being in kernel-space.
+      that are pinned in UKL due to being in kernel-space \cite{raza23}.
       According to the authors of the UKL-paper changing this layout would have required changes
       to the Linux kernel that may be difficult to upstream (see \refsec{sec:goals}).
 
       The virtual address space of regular user-level processes remains unchanged from
-      the classic Linux virtual address space layout.
+      the classic Linux virtual address space layout \cite{raza23}.
 
     \subsubsection{Transition on system calls}\label{sec:transition}
-      The way regular user-level processes access kernel functionality remains unchanged in UKL.
+      The way regular user-level processes access kernel functionality remains unchanged in UKL \cite{raza23}.
       The UKL-optimized process also still undergoes the regular entry and exit code of
-      the Linux kernel when accessing kernel functionality.
-      This code includes changing the execution stack to a kernel stack, scheduling and signal handling.
+      the Linux kernel when accessing kernel functionality in the base model \cite{raza23}.
+      This code includes changing the execution stack to a kernel stack, scheduling and signal handling \cite{raza23}.
       The only difference to the transition compared to Linux is that the UKL-optimized process uses
       \code{call} instead of \code{syscall} to jump into the entry code and \code{ret} instead
-      of \code{sysret} or \code{iret} to return from the exit code. 
+      of \code{sysret} or \code{iret} to return from the exit code \cite{ukl-glibc-syscalls}. 
       The differences in behaviour between \code{call} and \code{syscall} and 
       \code{ret} and \code{sysret} are handled through a new system call entry point, 
-      \code{ukl\_entry\_syscall\_64}, that is used by the UKL-optimized process.
+      \code{ukl\_entry\_syscall\_64}, that is used by the UKL-optimized process \cite{raza23}.
       Figure \ref{fig:ukl-transition} gives a graphic overview.
 
       \begin{figure*}[hbt]
@@ -388,7 +397,7 @@
     and use a regular \code{ret} instruction instead of \code{iret} to return from 
     interrupts (\code{CONFIG\_UKL\_USE\_RET}).
     These configuration options are described by the authors as examples to demonstrate the concept
-    and evaluate the performance gain.
+    and evaluate the performance gain \cite{raza23}.
 
   \subsection{Application modification}\label{sec:application-modification}
     In addition to the configuration options a developer can explore more specialized optimizations
@@ -397,63 +406,67 @@
     For example, if an application only uses TCP, a write to a socket will always be to
     a TCP socket.
     By calling the \code{tcp\_sendmsg} routine directly the TCP/UDP polymorphism in the kernel
-    can be bypassed.
+    can be bypassed \cite{raza23}.
     
-    UKL offers a per-thread flag that causes the thread to be treated like a kernel thread.
+    UKL offers a per-thread flag that causes the thread to be treated like a kernel thread \cite{raza23}.
     By setting this flag a thread on a performance critical path can avoid pre-emption
     until its task is completed.
 
   \subsection{Implementation}
-    The current implementation of UKL only supports x86-64 architectures.
+    The current implementation of UKL only supports x86-64 architecture.
     The authors of the UKL-paper hope that communities interested in non-x86 architectures
-    will take on porting UKL to their platforms if UKL is accepted upstream.
+    will take on porting UKL to their platforms if UKL is accepted upstream \cite{raza23}.
 
     \subsubsection{Base model}\label{sec:imp:base-model}
       As mentioned in \refsec{sec:transition}, the usage of \code{call} instead of \code{syscall}
       changes a kernel invariant and thus additional code is needed to resolve that.
       This is done in the new \code{ukl\_entry\_syscall\_64} entry point, which is called by
-      UKL application code.
-      The return address for system calls is stored in \code{rcx} register which is then 
-      pushed to the kernel stack.
-      The \code{call} instruction stores the return address on the user stack.
-      The authors' solution to this problem is to simply update the return address on the kernel
+      UKL application code \cite{raza23, ukl-glibc-syscalls}.
+
+      In Linux the return address for system calls is stored in the \code{rcx} register which is then 
+      pushed to the kernel stack \cite{raza23}.
+      The \code{call} instruction however stores the return address on the user stack \cite{raza23}.
+      The authors' solution to this problem is to update the return address on the kernel
       stack with the value stored on the user stack \cite{ukl-github-entry}.
 
       In the entry/exit code the execution mode of the calling thread has to be considered,
       because the UKL-optimized application always executes in kernel mode (see \refsec{sec:base-model}).
-      The kernel tracks the execution mode through the \code{CS} register.
+      The kernel tracks the execution mode through the \code{CS} register \cite{raza23}.
       To track the execution mode of UKL threads the authors of the UKL paper added a 
       new per-thread variable \code{in\_user} \cite{ukl-github-entry, ukl-github-inuser-add}.
 
       \textbf{Entry code:}
       If \code{in\_user} is zero then the calling thread is a regular non-UKL 
       user-level thread \cite{ukl-github-inuser-getter-setter}.
-      In this case the kernel just executes the system call without any UKL modification.
+      In this case the kernel just executes the system call without any UKL modification \cite{ukl-github-entry}.
 
       If \code{in\_user} is two then the calling thread is a UKL thread executing 
       user code \cite{ukl-github-inuser-getter-setter}.
       Since the thread is a UKL thread it executes in kernel mode and thus the value of the 
-      \code{CS} register was \code{KERNEL\_CS}.
-      This value was pushed to the kernel stack in the \code{ukl\_entry\_SYSCALL\_64} entry point.
+      \code{CS} register was \code{KERNEL\_CS} \cite{raza23}.
+      This value was pushed to the kernel stack in the \code{ukl\_entry\_SYSCALL\_64} 
+      entry point \cite{ukl-github-entry}.
       In order for the thread to be treated like a user-level thread this stored \code{CS} 
-      value has to be changed to the user \code{CS} value.
-      The \code{in\_user} value is then set to one because the thread is now executing kernel code.
+      value has to be changed to the user \code{CS} value \cite{ukl-github-entry}.
+      The \code{in\_user} value is then set to one because the thread is now executing 
+      kernel code \cite{ukl-github-entry, ukl-github-inuser-getter-setter}.
 
       If \code{in\_user} is one then the calling thread is a UKL thread executing 
-      kernel code cite{ukl-github-inuser-getter-setter}.
-      Since the thread is a UKL-optimized it executes in kernel mode and thus the \code{CS} value
+      kernel code \cite{ukl-github-inuser-getter-setter}.
+      Since the thread is a UKL-optimized one, it executes in kernel mode and thus the \code{CS} value
       stored on stack is already correct (\code{KERNEL\_CS}).
-      The \code{in\_user} value is also already correct.
+      The \code{in\_user} value is also already correct \cite{ukl-github-inuser-getter-setter}.
 
       \textbf{Exit code:}
       If \code{in\_user} is zero, then the thread is a user-level non-UKL thread and should return
-      without any modification.
+      without any modification \cite{ukl-github-entry}.
 
       If \code{in\_user} is one, then the thread is a UKL thread and should thus remain in 
-      kernel mode execution.
-      However, a regular \code{iret} would take the thread back to user mode.
-      To avoid that the \code{CS} value saved on stack is changed to \code{KERNEL\_CS}.
-      Then \code{in\_user} is set to two, because the thread is now returning to user code.
+      kernel mode execution \cite{ukl-github-entry}.
+      However, a regular \code{iret} would take the thread back to user mode \cite{ukl-github-entry}.
+      To avoid that the \code{CS} value saved on stack is changed to \code{KERNEL\_CS} \cite{ukl-github-entry}.
+      Then \code{in\_user} is set to two, because the thread is now returning to user 
+      code \cite{ukl-github-entry}.
 
     \subsubsection{Bypassing entry/exit code}
       In order not to explode the volume of this report I will only describe the implementation
@@ -462,74 +475,76 @@
 
       As mentioned in \refsec{sec:application-modification} a UKL-optimized application can
       always call the internal system call function directly without going through the entry and
-      exit code.
+      exit code \cite{ukl-github-bypass}.
       Since the entry and exit code is, among other things, responsible for basic system services,
       such as RCU handling, switching the execution stack to a kernel stack, scheduling and signal
-      handling, bypassing the entry and exit code can result in a faster system call.
+      handling, bypassing the entry and exit code can result in a faster system call \cite{raza23}.
 
       For the bypass the authors of UKL modified the \code{SYSCALL\_DEFINE} macro to add
       a wrapper function named \code{ukl\_bp\_<syscall name>} to each system call \cite{ukl-github-bypass}.
       In glibc the authors added a check to call this wrapper function 
       directly if bypassing is enabled \cite{ukl-glibc-bypass}.
-      If bypassing is disabled the regular UKL syscall entry point is used (see \refsec{sec:imp:base-model}).
+      If bypassing is disabled the regular UKL syscall entry point is used 
+      (see \refsec{sec:imp:base-model}) \cite{ukl-glibc-bypass}.
       
-      Bypassing the entry and exit code also bypasses the stack switch from user to kernel stack and back.
+      Bypassing the entry and exit code also bypasses the stack switch from user to kernel stack 
+      and back \cite{ukl-github-bypass}.
       If the configuration option to avoid stack switches (see \refsec{sec:configuration-options}) is
-      turned on, then this is not a problem.
+      turned on, then this is not a problem \cite{ukl-github-bypass}.
       Otherwise, a stack switch should occur.
       To achieve that, the authors created functions to conduct a stack switch from user to kernel stack 
-      or from kernel to user stack.
+      or from kernel to user stack \cite{ukl-github-bypass}.
       These stack switch functions are then used in the system call wrapper function created earlier, 
       given that the \code{CONFIG\_UKL\_SAME\_STACK} is turned off \cite{ukl-github-bypass}.
 
       Bypassing the entry and exit code can create a performance benefit, because the bookkeeping
       (RCU handling, scheduling, signal handling) usually done by the kernel on a system call is also
-      bypassed.
+      bypassed \cite{ukl-github-bypass}.
       Since this bookkeeping has to be performed at some point, the authors of UKL added a configurable
       limit for how often the entry/exit code is bypassed before going through the regular entry 
       and exit code \cite{ukl-github-bypass}.
-      Setting this limit low will grant less performance benefit but but the book keeping is performed
+      Setting this limit low will grant less performance benefit, but the bookkeeping is performed
       more frequent.
       Setting the limit higher can lead to a greater performance gain, but the tail latency for system 
       calls might increase because a backlog of bookkeeping that has to be done can build 
       up \cite{ukl-github-bypass}.
 
-\section{Conclusion}\label{sec:conclusion}
-  \subsection{Performance}
-    The UKL paper focuses on runtime performance.
-    Other benefits demonstrated by other unikernel research, such as security, boot time or
-    resource utilization, are neither targeted nor evaluated.
-    
-    \subsubsection{System call overhead elimination}
-      The authors of the UKL paper compared unmodified Linux to the UKL base model
-      and the UKL base model with \code{UKL\_BP} enabled with \code{getppid}, \code{read},
-      \code{write}, \code{sendto} and \code{recvfrom} system calls.
-      The base performance is evaluated with 1 Byte payloads for \code{read},
-      \code{write}, \code{sendto} and \code{recvfrom}.
-      Here the performance improvement using the base model is below 5\%.
-      The authors credit this to the high degree of optimization of the \code{syscall}
-      instruction.
-      Using the \code{UKL\_BP} optimization however reaches a performance benefit of
-      83\% for \code{getppid} and 49\% for \code{read}, indicating that the entry
-      and exit code is the main source of Linux system call latency \cite{raza23}.
+\section{Evaluation}\label{sec:evaluation}
+  The UKL paper focuses on runtime performance.
+  Other benefits demonstrated by other unikernel research, such as security, boot time or
+  resource utilization, are neither targeted nor evaluated.
+  
+  \subsubsection{System call overhead elimination}
+    The authors of the UKL paper compared unmodified Linux to the UKL base model
+    and the UKL base model with \code{UKL\_BP} enabled with \code{getppid}, \code{read},
+    \code{write}, \code{sendto} and \code{recvfrom} system calls.
+    The base performance is evaluated with 1 Byte payloads for \code{read},
+    \code{write}, \code{sendto} and \code{recvfrom}.
+    Here the performance improvement using the base model is below 5\%.
+    The authors credit this to the high degree of optimization of the \code{syscall}
+    instruction.
+    Using the \code{UKL\_BP} optimization however reaches a performance benefit of
+    83\% for \code{getppid} and 49\% for \code{read}, indicating that the entry
+    and exit code is the main source of Linux system call latency \cite{raza23}.
 
-      With 8~KB payloads for \code{read}, \code{write}, \code{sendto} and \code{recvfrom}
-      the performance improvement of the base model becomes negligible. 
-      The base model with \code{UKL\_BP} enabled however still achieves a performance 
-      improvement of between 11\% for \code{write} and 22\% for \code{recvfrom}.
+    With 8~KB payloads for \code{read}, \code{write}, \code{sendto} and \code{recvfrom}
+    the performance improvement of the base model becomes negligible. 
+    The base model with \code{UKL\_BP} enabled however still achieves a performance 
+    improvement of between 11\% for \code{write} and 22\% for \code{recvfrom}.
 
-    \subsubsection{Realistic workloads}
-      Further benchmarks were performed by the authors using Redis, a widely used single-threaded 
-      in-memory database and Memcached, a multithreaded key-value store.
+  \subsubsection{Realistic workloads}
+    Further benchmarks were performed by the authors using Redis, a widely used single-threaded 
+    in-memory database and Memcached, a multithreaded key-value store.
 
-      Across all tests the UKL base model a negligible or no performance benefit,
-      showing that just replacing \code{syscall} instructions with procedure calls
-      gives no real benefit for real workloads.
+    Across all tests the UKL base model a negligible or no performance benefit,
+    showing that just replacing \code{syscall} instructions with procedure calls
+    gives no real benefit for real workloads.
 
-      The UKL base model with both \code{UKL\_BP} and \code{CONFIG\_UKL\_USE\_RET}
-      (see \refsec{sec:configuration-options}) turned on delivered a small performance
-      benefit with 12\% throughput improvement for Redis on a physical machine.
+    The UKL base model with both \code{UKL\_BP} and \code{CONFIG\_UKL\_USE\_RET}
+    (see \refsec{sec:configuration-options}) turned on delivered a small performance
+    benefit with 12\% throughput improvement for Redis on a physical machine.
 
+\section{Discussion}\label{sec:discussion}
   \subsection{Reception by the Linux community}
     The UKL base model was posted as a request for comment (RFC) to the public Linux
     kernel mailing list in October 2022 \cite{ukl-rfc-lwn}.
@@ -541,12 +556,12 @@
     the Linux kernel community to carry the support burden and concludes that enormous
     justification would be required to include UKL in the upstream Linux kernel.
 
-    A post by Red Hat Research \cite{ukl-redhat-post} says that UKL aims to "allow 
+    A post by Red Hat Research \cite{ukl-redhat-post} says that UKL aims to ``allow 
     the entire upstream Linux developer community to maintain and develop the code".
     This can be seen to confirm the fear of the Linux kernel maintainer mentioned earlier
     \cite{ukl-rfc-negative}.
 
-    Additionally the trust in Red Hat has dropped after they announced to paywall the
+    Additionally, the trust in Red Hat has dropped after they announced to paywall the
     source code for Red Hat Enterprise Linux (RHEL) \cite{redhat-fuckup}.
 
     Considering all of this, I do not think UKL will be included in the upstream
@@ -561,6 +576,9 @@
     This means that Go applications can not benefit from any of the optimizations UKL offers,
     except for application modification.
     This issue is not addressed in the UKL paper.
+
+\section{Conclusion}
+  Shits alright!
 
 \bibliographystyle{plain}
 \bibliography{template}
