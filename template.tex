@@ -78,7 +78,7 @@
   For maximal specialization, the application itself can be modified to use kernel routines
   directly.
   UKL tries to keep the changes to the Linux kernel as minimal as possible,
-  so that UKL can be maintained with the (general purpose) Linux kernel \cite{raza23}.
+  so that UKL can be maintained with the (general-purpose) Linux kernel \cite{raza23}.
   
 
 \section{Background}\label{sec:background}
@@ -202,12 +202,12 @@
       Other tenants and internet-connected hosts in general are seen as 
       a potential attacker.
       Internally the hypervisor is used as the sole unit of isolation, 
-      rather than adopting a multi-user access control model as most general purpose OSes do.
+      rather than adopting a multi-user access control model as most general-purpose OSes do.
       External entities the unikernel communicates with are trusted through
       protocol libraries such as SSL or SSH \cite{madhavapeddy13}.
 
     \subsubsection{Security}
-      A problem with images based on a general purpose OSes is that misconfiguration can
+      A problem with images based on a general-purpose OS is that misconfiguration can
       leave unneeded or unnecessary services running. 
       These services can significantly increase the remote attack surface.
       When creating an appliance using the unikernel approach only the libraries
@@ -216,7 +216,7 @@
       Further this can also drastically decrease the amount of code included and thus the chance
       for a vulnerability in the code.
       
-      About 70\% of vulnerabilities in Windows, a general purpose OS written in C/C++,
+      About 70\% of vulnerabilities in Windows, a general-purpose OS written in C/C++,
       that Microsoft assigns a CVE to each year are memory safety issues \cite{msrc-19-07}.
       Unikernels written in high level programming languages with a strong type system 
       can use high level language features for memory management to negate a large
@@ -246,7 +246,7 @@
 
       In \textit{strip down} unikernels an existing kernel code base is forked,
       and all functionality not needed for the unikernel is removed.
-      The interfaces and general purpose libraries can be preserved to some degree
+      The interfaces and general-purpose libraries can be preserved to some degree
       to make porting of existing applications written for the original kernel
       over to the unikernel easier. 
       This generality however comes at the cost of loosing room for specialization,
@@ -327,7 +327,7 @@
 
   \subsection{Incremental approach}
     UKL follows a so-called incremental approach \cite{raza23}. 
-    Each increment is less general purpose but can bring performance benefits.
+    Each increment is less general-purpose but can bring performance benefits.
     The lowest increment is the \textit{base model} which preserves almost all the 
     invariants and assumptions of applications written for Linux \cite{raza23}.
     The performance benefit of the base model is negligible \cite{raza23}.
@@ -578,7 +578,23 @@
     This issue is not addressed in the UKL paper.
 
 \section{Conclusion}
-  Shits alright!
+  The demands of modern day cloud computing have shifted towards smaller more isolated services.
+  Monolithic OSes are not perfect to suit these demands.
+  Unikernels, libOSes specifically tailored for cloud computing, have thus seen a rise in popularity.
+
+  UKL aims to introduce a new unikernel target to the Linux kernel.
+  The authors of UKL tried to keep the changes to the Linux kernel as minimal as possible
+  to both preserve most of the kernel invariants from the regular Linux kernel, and
+  improve the chances of UKL being included into the upstream Linux kernel.
+
+  UKL allows an (unmodified) application to be compiled and statically linked with the kernel.
+  In the base model system call overhead elimination is used for minimal performance gain.
+  Further a developer can activate different compile time options to further improve the performance
+  of the application.
+  Additionally, a developer can choose to modify the application to call internal kernel routines directly.
+
+  UKL has demonstrated a 12\% throughput improvement in a Redis benchmark compared to regular Linux.
+  
 
 \bibliographystyle{plain}
 \bibliography{template}
