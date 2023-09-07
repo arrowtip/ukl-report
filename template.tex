@@ -47,27 +47,27 @@
 
 \section{Introduction}\label{sec:introduction}
   Modern cloud services are often highly specialized, to the point of a microservice.
-  In a mircoservice architecture, an application is split up into a collection of loosely coupled services,
-  that communicate through lightweight protocols and each only fulfil a single purpose \cite{madhavapeddy13-2}.
+  In a microservice architecture, an application is split up into a collection of loosely coupled services,
+  that communicate through lightweight protocols and each only fulfil a single purpose~\cite{madhavapeddy13-2}.
   These services share a few key demands. They need to be able to communicate 
   efficiently with each other. Since they need to communicate with other services,
   they are exposed to the internet to some degree and thus should be as secure as possible.
-  Due to the single purpose nature of the microservices they often execute as a single process \cite{raza19}.
+  Due to the single purpose nature of the microservices they often execute as a single process~\cite{raza19}.
   Lastly, the image the service is executed with, and the memory usage should be as small as possible.
   The services are often executed in a virtual machine on rented hardware, so lower requirements
-  in memory and storage can improve the profitability of a service \cite{madhavapeddy13}.
+  in memory and storage can improve the profitability of a service~\cite{madhavapeddy13}.
   These demands have caused a resurgence of research exploring the concept of 
-  a library operating system (libOS) and the emergence of unikernels \cite{madhavapeddy13-2}. 
+  a library operating system (libOS) and the emergence of unikernels~\cite{madhavapeddy13-2}. 
 
   In a libOS a target application is linked with a set of
-  libraries that provide all the services a regular OS would usually provide \cite{madhavapeddy13-2}.
-  The resulting executable can then be deployed directly to hardware \cite{raza19}.
+  libraries that provide all the services a regular OS would usually provide~\cite{madhavapeddy13-2}.
+  The resulting executable can then be deployed directly to hardware~\cite{raza19}.
   In 2013 the term \textit{unikernel} was first introduced for libOSes
   for cloud services and deployment to virtual hardware~\cite{madhavapeddy13}.
 
   Since then multiple unikernels have been created. Some are written from scratch like
-  ClickOS \cite{martins2014} and Unikraft \cite{kuenzer21}.
-  Others borrow code from an existing OS like Drawbridge \cite{porter11} 
+  ClickOS~\cite{martins2014} and Unikraft~\cite{kuenzer21}.
+  Others borrow code from an existing OS like Drawbridge~\cite{porter11} 
   that uses code from Windows.
 
   UKL uses the Linux kernel as a base to create a unikernel.
@@ -78,7 +78,7 @@
   For maximal specialization, the application itself can be modified to use kernel routines
   directly.
   UKL tries to keep the changes to the Linux kernel as minimal as possible,
-  so that UKL can be maintained with the (general-purpose) Linux kernel \cite{raza23}.
+  so that UKL can be maintained with the (general-purpose) Linux kernel~\cite{raza23}.
   
 
 \section{Background}\label{sec:background}
@@ -112,17 +112,17 @@
   \subsection{Library operating systems}\label{sec:libOS}
     One of the problems of the fixed abstractions for system resources in general-purpose OSes
     is that it denies applications the advantage of domain-specific optimizations.
-    For example in 1994 Cao et al. \cite{cao94} showed that application-controlled file caching
+    For example in 1994 Cao et al.~\cite{cao94} showed that application-controlled file caching
     can reduce application running time by 45\%.
 
     In the mid 1990s the libOS was proposed as a different OS architecture
-    where the application can control the hardware abstractions, instead of the OS \cite{engler95}.
+    where the application can control the hardware abstractions, instead of the OS~\cite{engler95}.
     In a libOS the hardware resources are not controlled and protected by a kernel.
     Instead, a set of application-level libraries implement the mechanisms to drive hardware,
     communicate over the network and all other functionality a general-purpose 
     operating system would provide for an application.
     Further a set of policies are used to enforce access control and isolation in the
-    application layer \cite{madhavapeddy13-2}.
+    application layer~\cite{madhavapeddy13-2}.
     
     The libOS architecture allows applications to access hardware resources directly
     thus eliminating the need for repeated privilege transitions to move data
@@ -137,7 +137,7 @@
     can significantly reduce the amount of code involved.
     This reduction in code can not only lead to a reduction in image size, 
     but can also decrease the chance of the code containing a 
-    security vulnerability \cite{madhavapeddy13}.
+    security vulnerability~\cite{madhavapeddy13}.
 
     The libOS architecture has two major disadvantages:   
     One, it is hard to achieve strong resource isolation because not all
@@ -147,7 +147,7 @@
     for example a kernel module.
     This implementation effort has caused problems with hardware compatibility
     for libOS projects and thus mostly limited their relevance to the
-    research domain \cite{madhavapeddy13, raza19}.
+    research domain~\cite{madhavapeddy13, raza19}.
 
   \subsection{Unikernels}
     OS virtualization can overcome both of the major disadvantages of libOSes
@@ -157,7 +157,7 @@
     This delegates resource isolation from the OS level to the hypervisor.
     The hypervisor offers a much simpler, less fine-grained interface than
     a conventional OS, consisting of virtual CPUs and memory pages, 
-    rather than the process-oriented approach in conventional OSes \cite{madhavapeddy13-2}.
+    rather than the process-oriented approach in conventional OSes~\cite{madhavapeddy13-2}.
     Dedicating a separate VM to each application also leaves more room
     to specialize the VM to its particular purpose.
     The problem of hardware compatibility of libOSes can also be overcome
@@ -167,31 +167,31 @@
     hardware.
 
     Madhavapeddy et al. introduced the term unikernel in a paper 
-    published in 2013 \cite{madhavapeddy13}.
+    published in 2013~\cite{madhavapeddy13}.
     Here unikernels are described as an approach to deploy cloud services
     using specialized single-purpose libOS VMs running directly 
-    on the hypervisor \cite{madhavapeddy13}.
+    on the hypervisor~\cite{madhavapeddy13}.
 
     Despite the benefits of the unikernel approach, they have not yet been widely adopted
     outside the research and experimental domain.
     This could be attributed to the engineering burden of porting existing software
-    to an environment with no or only partial support for legacy software interfaces \cite{raza19}.
+    to an environment with no or only partial support for legacy software interfaces~\cite{raza19}.
     
     \subsubsection{Performance and size}
       Deploying a service using a unikernel can offer significant
       performance advantages.
       Typical optimizations other than using libraries specialized for the given
-      application include avoiding ring transition overheads \cite{maeda2003},
-      leveraging the single address space to pass pointers rather than copying data \cite {schatzberg16},
-      deferring pre-emption in latency sensitive routines,
-      exploiting application knowledge to remove code that is never executed \cite{madhavapeddy13},
-      and cross layer optimization between kernel and application code \cite{raza19}.
+      application include avoiding ring transition overheads~\cite{maeda2003},
+      leveraging the single address space to pass pointers rather than copying data~\cite {schatzberg16},
+      deferring preemption in latency sensitive routines,
+      exploiting application knowledge to remove code that is never executed~\cite{madhavapeddy13},
+      and cross layer optimization between kernel and application code~\cite{raza19}.
 
       Memcached running on a unikernel TCP/IP stack
-      demonstrated a 200\% throughput improvement compared to Linux \cite{schatzberg16},
+      demonstrated a 200\% throughput improvement compared to Linux~\cite{schatzberg16},
       unikernels deployed within a microVM have shown six to ten times shorter
-      boot times over containers \cite{koller17} and a micropython unikernel reached an image
-      size of 1~MB while requiring 8~MB of memory to run \cite{manco17}.
+      boot times over containers~\cite{koller17} and a micropython unikernel reached an image
+      size of 1~MB while requiring 8~MB of memory to run~\cite{manco17}.
 
     \subsubsection{Threat model}\label{sec:thread-model}
       Unikernels are per definition concerned with applications that provide network
@@ -204,7 +204,7 @@
       Internally the hypervisor is used as the sole unit of isolation, 
       rather than adopting a multi-user access control model as most general-purpose OSes do.
       External entities the unikernel communicates with are trusted through
-      protocol libraries such as SSL or SSH \cite{madhavapeddy13}.
+      protocol libraries such as SSL or SSH~\cite{madhavapeddy13}.
 
     \subsubsection{Security}
       A problem with images based on a general-purpose OS is that misconfiguration can
@@ -217,16 +217,16 @@
       for a vulnerability in the code.
       
       About 70\% of vulnerabilities in Windows, a general-purpose OS written in C/C++,
-      that Microsoft assigns a CVE to each year are memory safety issues \cite{msrc-19-07}.
+      that Microsoft assigns a CVE to each year are memory safety issues~\cite{msrc-19-07}.
       Unikernels written in high level programming languages with a strong type system 
       can use high level language features for memory management to negate a large
-      portion of these vulnerabilities \cite{madhavapeddy13, lankes19}.
-      MirageOS \cite{madhavapeddy13}, a unikernel written in OCaml, can be sealed \cite{hunt07} at runtime,
+      portion of these vulnerabilities~\cite{madhavapeddy13, lankes19}.
+      MirageOS~\cite{madhavapeddy13}, a unikernel written in OCaml, can be sealed~\cite{hunt07} at runtime,
       thus preventing any code not present at compile time from being executed.
       MirageOS further implements compile-time address space randomization to defend against
       return-oriented programming attacks and save on runtime complexity.
       This is justified by the fact that for unikernels reconfiguring the appliance 
-      means recompiling it, potentially for every deployment \cite{madhavapeddy13}.
+      means recompiling it, potentially for every deployment~\cite{madhavapeddy13}.
 
       Another aspect of unikernel security is that the chance for a common exploit is lower.
       An exploit found in the Linux kernel can potentially affect all machines running Linux
@@ -239,7 +239,7 @@
     \subsubsection{Categorization of unikernels}\label{sec:categories-of-unikernels}
       \textit{Clean slate} unikernels are written from scratch.
       Here the unikernel designers have full control over the language
-      and the methodology used \cite{raza19}.
+      and the methodology used~\cite{raza19}.
       Thus, the unikernel can be specialized to an arbitrary degree to service the needs
       of a particular class of applications.
       The interface available to the application can also be chosen freely.
@@ -253,20 +253,20 @@
       efficient pathways and fine-tuned implementation.
       The creation of an out-of-tree fork of an existing OS comes with the burden of
       having to manually port updates from the original OS to the unikernel at regular intervals
-      in order to keep the support for existing applications \cite{raza19}.
+      in order to keep the support for existing applications~\cite{raza19}.
       
 \section{Related Work}\label{sec:relwork} 
   \subsection{Kernel Mode Linux}
     Kernel Mode Linux (KML) is an operating system that allows
     execution of user processes in kernel mode on IA-32 CPUs.
     Based on the observation that system calls can be 36 times slower
-    than function calls \cite{maeda2003} KML allows applications to execute in
+    than function calls~\cite{maeda2003} KML allows applications to execute in
     kernel mode, thus allowing the usage of function calls instead of system calls.
     An application executing in kernel mode would be capable of accessing kernel
     memory and compromise the integrity of the system.
     To prevent this, KML uses TALx86, a typed assembly language.
     The authors of KML prove that using the typed assembly language guarantees the 
-    same amount of safety as using traditional hardware-based protection of the kernel \cite{maeda2003}.
+    same amount of safety as using traditional hardware-based protection of the kernel~\cite{maeda2003}.
     In order to benefit from that safety applications for KML have to be written in
     either TALx86 or Popcorn, a safe dialect of the C programming language.
     Here instead of using system calls the programmer can now use function calls for improved performance.
@@ -274,7 +274,7 @@
     Existing applications can also be executed in kernel mode but do not come with
     the mentioned safety guarantees.
     This is made possible by adding a new branch to the system call invocation multiplexer
-    that invokes system calls with direct function calls \cite{maeda2003}.
+    that invokes system calls with direct function calls~\cite{maeda2003}.
     The multiplexer executes additional instructions to invoke the system call however, 
     so this mechanism is not optimal but still sufficiently fast compared to regular system call
     invocation.
@@ -286,23 +286,28 @@
     and two, system call overhead elimination using KML.
 
     For specialization only 283 of the 15,953 Kconfig configuration options where
-    selected as a base configuration \cite{kuo20}.
+    selected as a base configuration~\cite{kuo20}.
     With a total of 19 different additional options the top 20 most popular cloud applications,
     determined through Dockerhub download numbers, could all be successfully executed.
 
     In benchmarks Lupine Linux outperformed AWS Firecracker's MicroVM, a lightweight 
     kernel image for general cloud application. 
-    Lupine Linux also outperformed OSv \cite{osv}, 
-    one the POSIX-like unikernels used for reference \cite{kuo20}.
+    Lupine Linux also outperformed OSv~\cite{osv}, 
+    one the POSIX-like unikernels used for reference~\cite{kuo20}.
 
 \section{Approach}\label{sec:approach}
-  UKL follows a strip down approach (see \refsec{sec:categories-of-unikernels}),
-  where the OS to strip down from is Linux \cite{raza23}.
+  Unikernel Linux aims to bring the performance benefits promised by unikernels into the Linux kernel,
+  in the form of a new kernel built target~\cite{raza23}.
+  Like Lupine Linux, UKL implements system call overhead elimination~\cite{raza23}.
+  UKL goes further than Lupine Linux and statically links an application with the kernel,
+  and also addresses the overhead due to software transitions of system calls~\cite{raza23}.
+
   The authors tried to keep the changes to the Linux kernel as minimal as possible
-  in order to preserve the ecosystem around Linux as good as possible \cite{raza23}.
+  in order to preserve the ecosystem around Linux as good as possible~\cite{raza23}.
 
   In order to make transferring applications to UKL easier, the authors adopted an incremental approach,
-  starting with maximum compatibility and minimal performance gain, and from there increasing specialization.
+  starting with maximum compatibility and minimal performance gain, and from there increasing 
+  specialization~\cite{raza23}.
 
   \subsection{Goals}\label{sec:goals}
     The goal of UKL is similar to that of Lupine Linux, in that it aims
@@ -315,72 +320,72 @@
     As mentioned in \refsec{sec:categories-of-unikernels}, manually porting updates from
     the Linux kernel to UKL would require a continuous effort.
     To get around this the authors of UKL aim to have UKL included in the upstream Linux kernel
-    \cite{ukl-redhat-post}.
+   ~\cite{ukl-redhat-post}.
 
-    In a previous paper \cite{raza19} the authors of the UKL paper \cite{raza23}
+    In a previous paper~\cite{raza19} the authors of the UKL paper~\cite{raza23}
     observed that applications that require high-performance IO use frameworks
-    to bypass the kernel and gain unimpeded access to hardware devices \cite{raza19}.
+    to bypass the kernel and gain unimpeded access to hardware devices~\cite{raza19}.
     This combined with the promised benefits of unikernels creates a need to act
     for the Linux community in order to stay dominant for cloud computing, according to the authors.
     The goal of UKL is to provide the proof that Linux can be adapted to suit the new demands of
     cloud computing and retain its dominant position in the world of modern cloud computing.
 
   \subsection{Incremental approach}
-    UKL follows a so-called incremental approach \cite{raza23}. 
+    UKL follows a so-called incremental approach~\cite{raza23}. 
     Each increment is less general-purpose but can bring performance benefits.
     The lowest increment is the \textit{base model} which preserves almost all the 
-    invariants and assumptions of applications written for Linux \cite{raza23}.
-    The performance benefit of the base model is negligible \cite{raza23}.
+    invariants and assumptions of applications written for Linux~\cite{raza23}.
+    The performance benefit of the base model is negligible~\cite{raza23}.
     After the application runs on the base model the developer can choose to try different
     compile-time configuration options for a higher performance improvement.
     These configuration options might not work with every application, but are easy to try out
-    with just a recompilation \cite{raza23}.
+    with just a recompilation~\cite{raza23}.
     For more performance improvement the developer can choose to modify the application, exploiting the
-    knowledge about the application to invoke kernel functionality directly \cite{raza23}.
+    knowledge about the application to invoke kernel functionality directly~\cite{raza23}.
 
   \subsection{Base model}\label{sec:base-model}
     In the base model an application is compiled and statically linked with both 
-    the UKL kernel and a modified version of glibc to create a bootable image \cite{raza23}.
+    the UKL kernel and a modified version of glibc to create a bootable image~\cite{raza23}.
     When executed this image will have a UKL-optimized process executing the supplied 
-    application in kernel mode \cite{raza23}.
+    application in kernel mode~\cite{raza23}.
     Although in kernel mode the UKL-optimized process is still executed differently to kernel code,
-    with transition code to access kernel routines and dynamic non-pinned stacks in user-space \cite{raza23}.
-    The UKL-optimized process is per default also fully pre-emptible \cite{raza23}.
+    with transition code to access kernel routines and dynamic non-pinned stacks in user-space~\cite{raza23}.
+    The UKL-optimized process is per default also fully preemptible~\cite{raza23}.
 
-    Different to other unikernels, in UKL multiple regular user-level processes are still possible \cite{raza23}.
+    Different to other unikernels, in UKL multiple regular user-level processes are still possible~\cite{raza23}.
     This is crucial to support debugging and testing tools and initialization scripts needed by
     some applications (see \refsec{sec:goals}).
-    User-level processes are however not protected from the UKL-optimized one \cite{raza23}.
+    User-level processes are however not protected from the UKL-optimized one~\cite{raza23}.
     This is in line with the security model of unikernels where all work that has to 
     be protected is isolated through the hypervisor (\refsec{sec:thread-model}).
 
     \subsubsection{Address space layout}
       Most unikernels have a single address space due to their single process nature.
       UKL differs in that it retains the split of the virtual address space into kernel 
-      and user-space \cite{raza23}.
+      and user-space~\cite{raza23}.
       For the UKL-optimized process the code and data segments move to kernel space because
       the application and the kernel are compiled and linked together.
-      All other memory regions of the UKL-optimized process remain in user-space \cite{raza23}.
+      All other memory regions of the UKL-optimized process remain in user-space~\cite{raza23}.
 
       This layout could be problematic for applications with large initialized data sections
-      that are pinned in UKL due to being in kernel-space \cite{raza23}.
+      that are pinned in UKL due to being in kernel-space~\cite{raza23}.
       According to the authors of the UKL-paper changing this layout would have required changes
       to the Linux kernel that may be difficult to upstream (see \refsec{sec:goals}).
 
       The virtual address space of regular user-level processes remains unchanged from
-      the classic Linux virtual address space layout \cite{raza23}.
+      the classic Linux virtual address space layout~\cite{raza23}.
 
     \subsubsection{Transition on system calls}\label{sec:transition}
-      The way regular user-level processes access kernel functionality remains unchanged in UKL \cite{raza23}.
+      The way regular user-level processes access kernel functionality remains unchanged in UKL~\cite{raza23}.
       The UKL-optimized process also still undergoes the regular entry and exit code of
-      the Linux kernel when accessing kernel functionality in the base model \cite{raza23}.
-      This code includes changing the execution stack to a kernel stack, scheduling and signal handling \cite{raza23}.
+      the Linux kernel when accessing kernel functionality in the base model~\cite{raza23}.
+      This code includes changing the execution stack to a kernel stack, scheduling and signal handling~\cite{raza23}.
       The only difference to the transition compared to Linux is that the UKL-optimized process uses
       \code{call} instead of \code{syscall} to jump into the entry code and \code{ret} instead
-      of \code{sysret} or \code{iret} to return from the exit code \cite{ukl-glibc-syscalls}. 
+      of \code{sysret} or \code{iret} to return from the exit code~\cite{ukl-glibc-syscalls}. 
       The differences in behaviour between \code{call} and \code{syscall} and 
       \code{ret} and \code{sysret} are handled through a new system call entry point, 
-      \code{ukl\_entry\_syscall\_64}, that is used by the UKL-optimized process \cite{raza23}.
+      \code{ukl\_entry\_syscall\_64}, that is used by the UKL-optimized process~\cite{raza23}.
       Figure \ref{fig:ukl-transition} gives a graphic overview.
 
       \begin{figure*}[hbt]
@@ -397,7 +402,7 @@
     and use a regular \code{ret} instruction instead of \code{iret} to return from 
     interrupts (\code{CONFIG\_UKL\_USE\_RET}).
     These configuration options are described by the authors as examples to demonstrate the concept
-    and evaluate the performance gain \cite{raza23}.
+    and evaluate the performance gain~\cite{raza23}.
 
   \subsection{Application modification}\label{sec:application-modification}
     In addition to the configuration options a developer can explore more specialized optimizations
@@ -406,67 +411,67 @@
     For example, if an application only uses TCP, a write to a socket will always be to
     a TCP socket.
     By calling the \code{tcp\_sendmsg} routine directly the TCP/UDP polymorphism in the kernel
-    can be bypassed \cite{raza23}.
+    can be bypassed~\cite{raza23}.
     
-    UKL offers a per-thread flag that causes the thread to be treated like a kernel thread \cite{raza23}.
-    By setting this flag a thread on a performance critical path can avoid pre-emption
+    UKL offers a per-thread flag that causes the thread to be treated like a kernel thread~\cite{raza23}.
+    By setting this flag a thread on a performance critical path can avoid preemption
     until its task is completed.
 
   \subsection{Implementation}
     The current implementation of UKL only supports x86-64 architecture.
     The authors of the UKL-paper hope that communities interested in non-x86 architectures
-    will take on porting UKL to their platforms if UKL is accepted upstream \cite{raza23}.
+    will take on porting UKL to their platforms if UKL is accepted upstream~\cite{raza23}.
 
     \subsubsection{Base model}\label{sec:imp:base-model}
       As mentioned in \refsec{sec:transition}, the usage of \code{call} instead of \code{syscall}
       changes a kernel invariant and thus additional code is needed to resolve that.
       This is done in the new \code{ukl\_entry\_syscall\_64} entry point, which is called by
-      UKL application code \cite{raza23, ukl-glibc-syscalls}.
+      UKL application code~\cite{raza23, ukl-glibc-syscalls}.
 
       In Linux the return address for system calls is stored in the \code{rcx} register which is then 
-      pushed to the kernel stack \cite{raza23}.
-      The \code{call} instruction however stores the return address on the user stack \cite{raza23}.
+      pushed to the kernel stack~\cite{raza23}.
+      The \code{call} instruction however stores the return address on the user stack~\cite{raza23}.
       The authors' solution to this problem is to update the return address on the kernel
-      stack with the value stored on the user stack \cite{ukl-github-entry}.
+      stack with the value stored on the user stack~\cite{ukl-github-entry}.
 
       In the entry/exit code the execution mode of the calling thread has to be considered,
       because the UKL-optimized application always executes in kernel mode (see \refsec{sec:base-model}).
-      The kernel tracks the execution mode through the \code{CS} register \cite{raza23}.
+      The kernel tracks the execution mode through the \code{CS} register~\cite{raza23}.
       To track the execution mode of UKL threads the authors of the UKL paper added a 
-      new per-thread variable \code{in\_user} \cite{ukl-github-entry, ukl-github-inuser-add}.
+      new per-thread variable \code{in\_user}~\cite{ukl-github-entry, ukl-github-inuser-add}.
 
       \textbf{Entry code:}
       If \code{in\_user} is zero then the calling thread is a regular non-UKL 
-      user-level thread \cite{ukl-github-inuser-getter-setter}.
-      In this case the kernel just executes the system call without any UKL modification \cite{ukl-github-entry}.
+      user-level thread~\cite{ukl-github-inuser-getter-setter}.
+      In this case the kernel just executes the system call without any UKL modification~\cite{ukl-github-entry}.
 
       If \code{in\_user} is two then the calling thread is a UKL thread executing 
-      user code \cite{ukl-github-inuser-getter-setter}.
+      user code~\cite{ukl-github-inuser-getter-setter}.
       Since the thread is a UKL thread it executes in kernel mode and thus the value of the 
-      \code{CS} register was \code{KERNEL\_CS} \cite{raza23}.
+      \code{CS} register was \code{KERNEL\_CS}~\cite{raza23}.
       This value was pushed to the kernel stack in the \code{ukl\_entry\_SYSCALL\_64} 
-      entry point \cite{ukl-github-entry}.
+      entry point~\cite{ukl-github-entry}.
       In order for the thread to be treated like a user-level thread this stored \code{CS} 
-      value has to be changed to the user \code{CS} value \cite{ukl-github-entry}.
+      value has to be changed to the user \code{CS} value~\cite{ukl-github-entry}.
       The \code{in\_user} value is then set to one because the thread is now executing 
-      kernel code \cite{ukl-github-entry, ukl-github-inuser-getter-setter}.
+      kernel code~\cite{ukl-github-entry, ukl-github-inuser-getter-setter}.
 
       If \code{in\_user} is one then the calling thread is a UKL thread executing 
-      kernel code \cite{ukl-github-inuser-getter-setter}.
+      kernel code~\cite{ukl-github-inuser-getter-setter}.
       Since the thread is a UKL-optimized one, it executes in kernel mode and thus the \code{CS} value
       stored on stack is already correct (\code{KERNEL\_CS}).
-      The \code{in\_user} value is also already correct \cite{ukl-github-inuser-getter-setter}.
+      The \code{in\_user} value is also already correct~\cite{ukl-github-inuser-getter-setter}.
 
       \textbf{Exit code:}
       If \code{in\_user} is zero, then the thread is a user-level non-UKL thread and should return
-      without any modification \cite{ukl-github-entry}.
+      without any modification~\cite{ukl-github-entry}.
 
       If \code{in\_user} is one, then the thread is a UKL thread and should thus remain in 
-      kernel mode execution \cite{ukl-github-entry}.
-      However, a regular \code{iret} would take the thread back to user mode \cite{ukl-github-entry}.
-      To avoid that the \code{CS} value saved on stack is changed to \code{KERNEL\_CS} \cite{ukl-github-entry}.
+      kernel mode execution~\cite{ukl-github-entry}.
+      However, a regular \code{iret} would take the thread back to user mode~\cite{ukl-github-entry}.
+      To avoid that the \code{CS} value saved on stack is changed to \code{KERNEL\_CS}~\cite{ukl-github-entry}.
       Then \code{in\_user} is set to two, because the thread is now returning to user 
-      code \cite{ukl-github-entry}.
+      code~\cite{ukl-github-entry}.
 
     \subsubsection{Bypassing entry/exit code}
       In order not to explode the volume of this report I will only describe the implementation
@@ -475,39 +480,39 @@
 
       As mentioned in \refsec{sec:application-modification} a UKL-optimized application can
       always call the internal system call function directly without going through the entry and
-      exit code \cite{ukl-github-bypass}.
+      exit code~\cite{ukl-github-bypass}.
       Since the entry and exit code is, among other things, responsible for basic system services,
       such as RCU handling, switching the execution stack to a kernel stack, scheduling and signal
-      handling, bypassing the entry and exit code can result in a faster system call \cite{raza23}.
+      handling, bypassing the entry and exit code can result in a faster system call~\cite{raza23}.
 
       For the bypass the authors of UKL modified the \code{SYSCALL\_DEFINE} macro to add
-      a wrapper function named \code{ukl\_bp\_<syscall name>} to each system call \cite{ukl-github-bypass}.
+      a wrapper function named \code{ukl\_bp\_<syscall name>} to each system call~\cite{ukl-github-bypass}.
       In glibc the authors added a check to call this wrapper function 
-      directly if bypassing is enabled \cite{ukl-glibc-bypass}.
+      directly if bypassing is enabled~\cite{ukl-glibc-bypass}.
       If bypassing is disabled the regular UKL syscall entry point is used 
-      (see \refsec{sec:imp:base-model}) \cite{ukl-glibc-bypass}.
+      (see \refsec{sec:imp:base-model})~\cite{ukl-glibc-bypass}.
       
       Bypassing the entry and exit code also bypasses the stack switch from user to kernel stack 
-      and back \cite{ukl-github-bypass}.
+      and back~\cite{ukl-github-bypass}.
       If the configuration option to avoid stack switches (see \refsec{sec:configuration-options}) is
-      turned on, then this is not a problem \cite{ukl-github-bypass}.
+      turned on, then this is not a problem~\cite{ukl-github-bypass}.
       Otherwise, a stack switch should occur.
       To achieve that, the authors created functions to conduct a stack switch from user to kernel stack 
-      or from kernel to user stack \cite{ukl-github-bypass}.
+      or from kernel to user stack~\cite{ukl-github-bypass}.
       These stack switch functions are then used in the system call wrapper function created earlier, 
-      given that the \code{CONFIG\_UKL\_SAME\_STACK} is turned off \cite{ukl-github-bypass}.
+      given that the \code{CONFIG\_UKL\_SAME\_STACK} is turned off~\cite{ukl-github-bypass}.
 
       Bypassing the entry and exit code can create a performance benefit, because the bookkeeping
       (RCU handling, scheduling, signal handling) usually done by the kernel on a system call is also
-      bypassed \cite{ukl-github-bypass}.
+      bypassed~\cite{ukl-github-bypass}.
       Since this bookkeeping has to be performed at some point, the authors of UKL added a configurable
       limit for how often the entry/exit code is bypassed before going through the regular entry 
-      and exit code \cite{ukl-github-bypass}.
+      and exit code~\cite{ukl-github-bypass}.
       Setting this limit low will grant less performance benefit, but the bookkeeping is performed
       more frequent.
       Setting the limit higher can lead to a greater performance gain, but the tail latency for system 
       calls might increase because a backlog of bookkeeping that has to be done can build 
-      up \cite{ukl-github-bypass}.
+      up~\cite{ukl-github-bypass}.
 
 \section{Evaluation}\label{sec:evaluation}
   The UKL paper focuses on runtime performance.
@@ -525,7 +530,7 @@
     instruction.
     Using the \code{UKL\_BP} optimization however reaches a performance benefit of
     83\% for \code{getppid} and 49\% for \code{read}, indicating that the entry
-    and exit code is the main source of Linux system call latency \cite{raza23}.
+    and exit code is the main source of Linux system call latency~\cite{raza23}.
 
     With 8~KB payloads for \code{read}, \code{write}, \code{sendto} and \code{recvfrom}
     the performance improvement of the base model becomes negligible. 
@@ -547,22 +552,22 @@
 \section{Discussion}\label{sec:discussion}
   \subsection{Reception by the Linux community}
     The UKL base model was posted as a request for comment (RFC) to the public Linux
-    kernel mailing list in October 2022 \cite{ukl-rfc-lwn}.
+    kernel mailing list in October 2022~\cite{ukl-rfc-lwn}.
     All except one response to the post were of productive nature, with technical questions
     and suggestions. 
     Only one response concerned the inclusion of UKL into the upstream Linux kernel 
-    \cite{ukl-rfc-negative}.
+   ~\cite{ukl-rfc-negative}.
     The comment says that UKL tries to turn Linux into a completely new OS, while expecting 
     the Linux kernel community to carry the support burden and concludes that enormous
     justification would be required to include UKL in the upstream Linux kernel.
 
-    A post by Red Hat Research \cite{ukl-redhat-post} says that UKL aims to ``allow 
+    A post by Red Hat Research~\cite{ukl-redhat-post} says that UKL aims to ``allow 
     the entire upstream Linux developer community to maintain and develop the code".
     This can be seen to confirm the fear of the Linux kernel maintainer mentioned earlier
-    \cite{ukl-rfc-negative}.
+   ~\cite{ukl-rfc-negative}.
 
     Additionally, the trust in Red Hat has dropped after they announced to paywall the
-    source code for Red Hat Enterprise Linux (RHEL) \cite{redhat-fuckup}.
+    source code for Red Hat Enterprise Linux (RHEL)~\cite{redhat-fuckup}.
 
     Considering all of this, I do not think UKL will be included in the upstream
     Linux kernel.
@@ -572,7 +577,7 @@
     are based on system call being issued by the modified version of glibc, that
     the application and the kernel are compiled with.
     For some languages, like Go, this is a problem, since most system call invocations
-    are done directly by the language runtime and not through glibc \cite{ukl-vs-unicraft}.
+    are done directly by the language runtime and not through glibc~\cite{ukl-vs-unicraft}.
     This means that Go applications can not benefit from any of the optimizations UKL offers,
     except for application modification.
     This issue is not addressed in the UKL paper.
